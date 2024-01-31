@@ -1,13 +1,28 @@
 import { useState, useEffect, useRef } from "react";
-import { ProSidebar, Menu, MenuItem, SubMenu } from "react-pro-sidebar";
+import {
+  ProSidebar,
+  Menu,
+  MenuItem,
+  SubMenu,
+  SidebarHeader,
+} from "react-pro-sidebar";
 // import "react-pro-sidebar/dist/css/sidebar.css";
 import "react-pro-sidebar/dist/css/styles.css";
 
-import { mdiHome, mdiAccount, mdiEmail, mdiChartBar, mdiMenu } from "@mdi/js";
+import {
+  mdiHome,
+  mdiAccount,
+  mdiEmail,
+  mdiChartBar,
+  mdiMenu,
+  mdiCalendarStar,
+  mdiCalendarBlankOutline,
+} from "@mdi/js";
 import Icon from "@mdi/react";
-
+import Logo from "../resources/images/logo.png";
 import "./ResponsiveSidebar.css";
 import { click } from "@testing-library/user-event/dist/click";
+import { Link } from "react-router-dom";
 
 const MySidebar = () => {
   const [isSidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -63,21 +78,76 @@ const MySidebar = () => {
       breakPoint="md"
       ref={componentRef}
     >
-      <Menu iconShape="square">
-        <MenuItem icon={<Icon path={mdiHome} size={1} />}>Dashboard</MenuItem>
-        <SubMenu
-          closeOnClick={false}
-          title="User"
-          icon={<Icon path={mdiAccount} size={1} />}
-        >
+      <SidebarHeader
+        style={{
+          backgroundColor: "black",
+          color: "white",
+        }}
+      >
+        <div className="flex m-4 items-center justify-center">
+          <img src={Logo} alt="Logo" className="w-16 h-16  mr-2" />
+          <h1 className="text-white text-lg font-bold font-lobster">
+            H2OEvents
+          </h1>
+        </div>
+        {/* <h1 className="text-white">Logo</h1> */}
+      </SidebarHeader>
+      <Menu
+        iconShape="square"
+        style={{
+          backgroundColor: "black",
+          color: "white",
+        }}
+      >
+        <MenuItem icon={<Icon path={mdiHome} size={1} />}>
+          {" "}
+          <Link
+            to="/"
+            style={{
+              color: "white",
+            }}
+          >
+            Dashboard
+          </Link>
+        </MenuItem>
+        <SubMenu title="User" icon={<Icon path={mdiAccount} size={1} />}>
           <MenuItem>Profile</MenuItem>
           <MenuItem>Settings</MenuItem>
         </SubMenu>
-        <MenuItem icon={<Icon path={mdiEmail} size={1} />}>Messages</MenuItem>
-        <SubMenu title="Charts" icon={<Icon path={mdiChartBar} size={1} />}>
-          <MenuItem>Bar Chart</MenuItem>
+
+        <SubMenu title="Events" icon={<Icon path={mdiCalendarStar} size={1} />}>
+          <MenuItem>
+            <Link
+              to="/admin/create-event"
+              style={{
+                color: "white",
+              }}
+            >
+              Add Event
+            </Link>
+          </MenuItem>
+          <MenuItem>
+            <Link
+              to="/admin/event-list"
+              style={{
+                color: "white",
+              }}
+            >
+              Event List
+            </Link>
+          </MenuItem>
           {/* Add more menu items as needed */}
         </SubMenu>
+        <MenuItem icon={<Icon path={mdiCalendarBlankOutline} size={1} />}>
+          <Link
+            to="/admin/calendar"
+            style={{
+              color: "white",
+            }}
+          >
+            Calendar
+          </Link>
+        </MenuItem>
       </Menu>
 
       {/* Toggle button for mobile */}

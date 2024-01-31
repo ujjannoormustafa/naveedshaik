@@ -7,7 +7,7 @@ import {
   mdiImage,
 } from "@mdi/js";
 
-const CreateEvent = () => {
+const UpdateEvent = () => {
   const [eventInfo, setEventInfo] = useState({
     title: "",
     details: "",
@@ -33,14 +33,14 @@ const CreateEvent = () => {
     updatedPhotos.splice(index, 1);
     setEventInfo({ ...eventInfo, photos: updatedPhotos });
   };
-  const handleCreateEvent = () => {
+  const handleUpdateEvent = () => {
     console.log("Event Information:", eventInfo);
     // You can perform further actions here, like sending the data to a server.
   };
 
   return (
     <div className="bg-white container mx-auto mt-8 p-4">
-      <h2 className="text-3xl font-semibold mb-4">Create Event</h2>
+      <h2 className="text-3xl font-semibold mb-4">Update Event</h2>
       <form>
         <div className="mb-4">
           <label
@@ -213,14 +213,14 @@ const CreateEvent = () => {
         </div>
         <button
           type="button"
-          onClick={handleCreateEvent}
+          onClick={handleUpdateEvent}
           className="bg-black text-white py-2 px-4 rounded-md transition duration-300"
         >
-          Create Event
+          Update Event
         </button>
       </form>
     </div>
   );
 };
 
-export default CreateEvent;
+export default UpdateEvent;

@@ -1,9 +1,10 @@
-ResponsiveSidebar.css
+/* ResponsiveSidebar.css */
 
 /* Default styles for larger screens */
 .pro-sidebar {
   width: 200px;
   height: 100vh;
+  background-color: red;
 }
 
 /* Responsive styles for smaller screens */
