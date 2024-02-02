@@ -1,5 +1,5 @@
 import React from "react";
-import UpdateEvent from "../../components/UpdateEvent";
+import UpdateEvent from "../../components/admin/UpdateEvent";
 function UpdateEventPage() {
   return (
     <>

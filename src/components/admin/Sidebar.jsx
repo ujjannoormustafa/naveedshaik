@@ -19,7 +19,7 @@ import {
   mdiCalendarBlankOutline,
 } from "@mdi/js";
 import Icon from "@mdi/react";
-import Logo from "../resources/images/logo.png";
+import Logo from "../../resources/images/logo.png";
 import "./ResponsiveSidebar.css";
 import { click } from "@testing-library/user-event/dist/click";
 import { Link } from "react-router-dom";
