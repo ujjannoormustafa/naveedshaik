@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useNavigate } from "react-router-dom";
 import Icon from "@mdi/react";
 import {
   mdiAccount,
-  mdiGenderMale,
   mdiEmail,
   mdiLock,
   mdiEyeOutline,
@@ -13,45 +13,48 @@ import {
 } from "@mdi/js";
 import { BASE_URL } from "../../services/api";
 import Logo from "../../resources/images/logo.png";
+
 const Register = () => {
+  const navigate = useNavigate();
+
   const [fullName, setFullName] = useState("");
-  const [gender, setGender] = useState("");
   const [mobile, setMobile] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [role, setRole] = useState("user"); // Default role is "user"
   const [showPassword, setShowPassword] = useState(false);
-
+  const [error, setError] = useState(null);
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     if (name === "fullName") {
       setFullName(value);
-    } else if (name === "gender") {
-      setGender(value);
     } else if (name === "mobile") {
       setMobile(value);
     } else if (name === "email") {
       setEmail(value);
     } else if (name === "password") {
       setPassword(value);
+    } else if (name === "role") {
+      setRole(value);
     }
   };
 
   const handleRegister = async () => {
     try {
-      const response = await fetch(`${BASE_URL}api/auth/register`, {
+      const response = await fetch(`${BASE_URL}/api/auth/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          fullName,
-          gender,
-          mobile,
+          full_name: fullName,
+          phone_number: mobile,
+          role,
           email,
           password,
         }),
       });
-
+      console.log(response);
       if (response.ok) {
         // Handle registration success logic here
         toast.success("Registration Successful", {
@@ -64,9 +67,12 @@ const Register = () => {
           progress: undefined,
           theme: "light",
         });
+        navigate("/login", { replace: true });
       } else {
         // Handle registration failure logic here
-        handleErrorResponse(response.status);
+        response.json().then((data) => {
+          handleErrorResponse(data.message); // Assuming the server sends a message property
+        });
       }
     } catch (error) {
       console.error("Registration error:", error);
@@ -75,14 +81,15 @@ const Register = () => {
     }
   };
 
-  const handleErrorResponse = (status) => {
+  const handleErrorResponse = (response) => {
     let errorMessage = "";
     // Handle different registration error statuses
     // ...
+    // console.log(response);
 
-    setError(errorMessage);
+    setError(response);
 
-    toast.error(errorMessage, {
+    toast.error(error, {
       position: "top-right",
       autoClose: 5000,
       hideProgressBar: false,
@@ -94,7 +101,12 @@ const Register = () => {
     });
   };
 
-  const [error, setError] = useState(null);
+  const handleKeyPress = (event) => {
+    if (event.key === "Enter") {
+      // Call your register function here
+      handleRegister();
+    }
+  };
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -139,30 +151,7 @@ const Register = () => {
                     name="fullName"
                     value={fullName}
                     onChange={handleInputChange}
-                  />
-                </div>
-              </div>
-
-              {/* Gender */}
-              <div className="flex flex-col mb-5">
-                <label className="text-xs font-semibold text-white">
-                  Gender
-                </label>
-                <div className="flex items-center rounded lg bg-white p-2">
-                  <Icon
-                    path={mdiGenderMale}
-                    title="Gender"
-                    size={1}
-                    color="black"
-                    className="mr-1"
-                  />
-                  <input
-                    type="text"
-                    className="w-full p-2 text-black rounded-lg outline-none"
-                    placeholder="Gender"
-                    name="gender"
-                    value={gender}
-                    onChange={handleInputChange}
+                    onKeyPress={handleKeyPress}
                   />
                 </div>
               </div>
@@ -176,7 +165,7 @@ const Register = () => {
                   {/* Mobile icon goes here */}
                   <Icon
                     path={mdiPhone}
-                    title="Gender"
+                    title="phone_number"
                     size={1}
                     color="black"
                     className="mr-1"
@@ -188,6 +177,7 @@ const Register = () => {
                     name="mobile"
                     value={mobile}
                     onChange={handleInputChange}
+                    onKeyPress={handleKeyPress}
                   />
                 </div>
               </div>
@@ -212,6 +202,7 @@ const Register = () => {
                     name="email"
                     value={email}
                     onChange={handleInputChange}
+                    onKeyPress={handleKeyPress}
                   />
                 </div>
               </div>
@@ -236,6 +227,7 @@ const Register = () => {
                     name="password"
                     value={password}
                     onChange={handleInputChange}
+                    onKeyPress={handleKeyPress}
                   />
                   <div
                     className="cursor-pointer"
@@ -248,6 +240,22 @@ const Register = () => {
                       color="black"
                     />
                   </div>
+                </div>
+              </div>
+
+              {/* Role */}
+              <div className="flex flex-col mb-5">
+                <label className="text-xs font-semibold text-white">Role</label>
+                <div className="flex items-center rounded lg bg-white p-2">
+                  <select
+                    className="w-full p-2 text-black rounded-lg outline-none"
+                    name="role"
+                    value={role}
+                    onChange={handleInputChange}
+                  >
+                    <option value="user">User</option>
+                    <option value="admin">Admin</option>
+                  </select>
                 </div>
               </div>
 

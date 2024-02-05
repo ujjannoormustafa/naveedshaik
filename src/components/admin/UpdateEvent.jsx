@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import {
   mdiCalendar,
   mdiClockTimeThree,
@@ -6,8 +7,13 @@ import {
   mdiTicket,
   mdiImage,
 } from "@mdi/js";
-
+import { useAuth } from "../../context/AuthContext";
+import { BASE_URL } from "../../services/api";
 const UpdateEvent = () => {
+  const { eventId } = useParams();
+  const { token, userData } = useAuth();
+  const [newPhotos, setNewPhotos] = useState([]);
+
   const [eventInfo, setEventInfo] = useState({
     title: "",
     details: "",
@@ -19,6 +25,40 @@ const UpdateEvent = () => {
     ticketPrice: "",
   });
 
+  useEffect(() => {
+    const fetchEventDetails = async () => {
+      try {
+        // Fetch existing event details
+        const response = await fetch(`${BASE_URL}/api/event/${eventId}`, {
+          headers: {
+            Authorization: token,
+          },
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          // Set fetched details into state
+          setEventInfo({
+            title: data.title,
+            details: data.description,
+            photos: data.images,
+            date: data.date.split("T")[0],
+            time: data.time,
+            venue: data.venue,
+            totalSeats: data.totalSeats,
+            ticketPrice: data.ticketPrice,
+          });
+        } else {
+          console.error("Failed to fetch event details");
+        }
+      } catch (error) {
+        console.error("Error fetching event details:", error);
+      }
+    };
+
+    fetchEventDetails();
+  }, [eventId]);
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setEventInfo({ ...eventInfo, [name]: value });
@@ -26,16 +66,58 @@ const UpdateEvent = () => {
 
   const handleFileChange = (e) => {
     const files = e.target.files;
-    setEventInfo({ ...eventInfo, photos: [...eventInfo.photos, ...files] });
+    setNewPhotos([...newPhotos, ...files]);
   };
+
   const handleRemovePhoto = (index) => {
-    const updatedPhotos = [...eventInfo.photos];
-    updatedPhotos.splice(index, 1);
-    setEventInfo({ ...eventInfo, photos: updatedPhotos });
+    // const updatedPhotos = [...eventInfo.photos];
+    // updatedPhotos.splice(index, 1);
+    // setEventInfo({ ...eventInfo, photos: updatedPhotos });
   };
-  const handleUpdateEvent = () => {
-    console.log("Event Information:", eventInfo);
-    // You can perform further actions here, like sending the data to a server.
+
+  const handleUpdateEvent = async () => {
+    try {
+      // Prepare the update request body
+
+      const formData = new FormData();
+
+      formData.append("eventId", eventId);
+      formData.append("title", eventInfo.title);
+      formData.append("description", eventInfo.details);
+      formData.append("date", eventInfo.date);
+      formData.append("time", eventInfo.time);
+      formData.append("venue", eventInfo.venue);
+      formData.append("totalSeats", parseInt(eventInfo.totalSeats));
+      formData.append("ticketPrice", parseFloat(eventInfo.ticketPrice));
+
+      // Append existing Cloudinary URLs
+      eventInfo.photos.forEach((photo, index) => {
+        formData.append(`photos[${index}]`, photo);
+      });
+
+      // Append new photos
+      newPhotos.forEach((file, index) => {
+        formData.append(`newPhotos[${index}]`, file);
+      });
+      // Send the update request
+      const response = await fetch(`{${BASE_URL}/api/event/update-event}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token,
+        },
+        body: formData,
+      });
+
+      if (response.ok) {
+        console.log("Event updated successfully!");
+        // You can redirect the user or perform other actions after successful update
+      } else {
+        console.error("Failed to update event");
+      }
+    } catch (error) {
+      console.error("Error updating event:", error);
+    }
   };
 
   return (
@@ -95,7 +177,9 @@ const UpdateEvent = () => {
               {eventInfo.photos.map((photo, index) => (
                 <div key={index} className="relative bg-green">
                   <img
-                    src={URL.createObjectURL(photo)}
+                    src={
+                      photo instanceof File ? URL.createObjectURL(photo) : photo
+                    }
                     alt={`Event Photo ${index + 1}`}
                     width="100%"
                     height="100%"

@@ -1,40 +1,49 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useState, useEffect, useContext } from "react";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [getToken, setGetToken] = useState();
-  const [userData, setUserData] = useState([]);
+  const [token, setToken] = useState(localStorage.getItem("token") || null);
+  const [userData, setUserData] = useState(
+    JSON.parse(localStorage.getItem("userData")) || null
+  );
+  const [isLoggedIn, setIsLoggedIn] = useState(token ? true : false);
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    const userData = localStorage.getItem("user");
-    if (token) {
-      setIsLoggedIn(true);
-      setGetToken(token);
-      setUserData(userData);
-    }
-  }, []);
-  const login = () => {
-    // Implement your login logic here
+  const login = (newToken, newUser) => {
     setIsLoggedIn(true);
+    setToken(newToken);
+    setUserData(newUser);
+    localStorage.setItem("token", newToken);
+    if (userData != undefined) {
+      localStorage.setItem("userData", JSON.stringify(userData));
+    }
   };
 
   const logout = () => {
-    // Implement your logout logic here
     setIsLoggedIn(false);
+    setToken(null);
+    setUserData(null);
   };
 
+  useEffect(() => {
+    // Update localStorage when token, userData, or cartData changes
+    localStorage.setItem("token", token);
+    if (userData != undefined) {
+      localStorage.setItem("userData", JSON.stringify(userData));
+    }
+  }, [token, userData]);
+
+  // Provide a default value for cartData if it's null or undefined
   return (
     <AuthContext.Provider
       value={{
         isLoggedIn,
-        setIsLoggedIn,
-        getToken,
-        setGetToken,
+        token,
         userData,
-        setUserData,
+
+        login,
+
+        logout,
       }}
     >
       {children}

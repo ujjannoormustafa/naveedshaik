@@ -111,7 +111,16 @@ const MySidebar = () => {
           </Link>
         </MenuItem>
         <SubMenu title="User" icon={<Icon path={mdiAccount} size={1} />}>
-          <MenuItem>Profile</MenuItem>
+          <MenuItem>
+            <Link
+              to="/admin/change-profile"
+              style={{
+                color: "white",
+              }}
+            >
+              Profile
+            </Link>
+          </MenuItem>
           <MenuItem>Settings</MenuItem>
         </SubMenu>
 
@@ -123,7 +132,7 @@ const MySidebar = () => {
                 color: "white",
               }}
             >
-              Add Event
+              Create Event
             </Link>
           </MenuItem>
           <MenuItem>

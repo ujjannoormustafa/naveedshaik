@@ -5,13 +5,16 @@ import Icon from "@mdi/react";
 import { useNavigate } from "react-router-dom";
 import { mdiAccount, mdiLock, mdiEyeOutline, mdiEyeOffOutline } from "@mdi/js";
 import { BASE_URL } from "../../services/api";
+import { useAuth } from "../../context/AuthContext";
 import Logo from "../../resources/images/logo.png";
 const Login = () => {
-  const router = useNavigate();
+  const navigate = useNavigate();
+  const { login } = useAuth();
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState(null);
 
   const handleInputChange = (e) => {
     if (e.target.name === "username") {
@@ -23,7 +26,7 @@ const Login = () => {
 
   const handleLogin = async () => {
     try {
-      const response = await fetch(`${BASE_URL}api/auth/login`, {
+      const response = await fetch(`${BASE_URL}/api/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -33,6 +36,8 @@ const Login = () => {
 
       if (response.ok) {
         const responseData = await response.json();
+        console.log(responseData);
+        login(responseData.data, responseData.user);
         // Handle login logic here
         // setIsLoggedIn(true);
         // const token = responseData.data;
@@ -50,8 +55,11 @@ const Login = () => {
         });
         // localStorage.setItem("user", JSON.stringify(responseData.user));
         // localStorage.setItem("token", responseData.token);
-
-        // router.push("../components/events");
+        if (responseData.user.role == "admin") {
+          navigate("/admin", { replace: true });
+        } else {
+          navigate("/user", { replace: true });
+        }
       } else {
         handleErrorResponse(response.status);
       }
@@ -90,8 +98,12 @@ const Login = () => {
       theme: "light",
     });
   };
-
-  const [error, setError] = useState(null);
+  const handleKeyPress = (event) => {
+    if (event.key === "Enter") {
+      // Call your register function here
+      handleLogin();
+    }
+  };
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -132,6 +144,7 @@ const Login = () => {
                     name="username"
                     value={username}
                     onChange={handleInputChange}
+                    onKeyPress={handleKeyPress}
                   />
                 </div>
               </div>
@@ -152,8 +165,10 @@ const Login = () => {
                     className="w-full p-2 text-black rounded-lg outline-none "
                     placeholder="Password "
                     name="password"
+                    required="true"
                     value={password}
                     onChange={handleInputChange}
+                    onKeyPress={handleKeyPress}
                   />
                   <div
                     className="cursor-pointer"
