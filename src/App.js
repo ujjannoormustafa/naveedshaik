@@ -7,10 +7,12 @@ import AddEventPage from "./pages/admin/AddEventPage";
 import CalendarPage from "./pages/admin/CalendarPage";
 import UpdateEventPage from "./pages/admin/UpdateEventPage";
 import EventListPage from "./pages/admin/EventListPage";
+import EventDetailPage from "./pages/admin/EventDetailPage";
 import RegisterPage from "./pages/general/RegisterPage";
 import LoginPage from "./pages/general/LoginPage";
+
 import { useAuth } from "./context/AuthContext"; // replace with the actual path
-import EventDetailPage from "./pages/general/EventDetailPage";
+
 const ProtectedRoute = ({ element, role }) => {
   const { isLoggedIn, userData } = useAuth();
   console.log(userData);

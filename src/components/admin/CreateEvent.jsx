@@ -331,7 +331,7 @@ const CreateEvent = () => {
               Ticket Price
             </label>
             <input
-              type="text"
+              type="number"
               id="eventPrice"
               name="ticketPrice"
               required

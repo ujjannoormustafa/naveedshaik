@@ -1,12 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import Icon from "@mdi/react";
-import {
-  mdiCalendar,
-  mdiClockOutline,
-  mdiLocationEnter,
-  mdiTicket,
-} from "@mdi/js";
+import { mdiCalendar, mdiClockOutline, mdiMapMarker, mdiTicket } from "@mdi/js";
 import { useAuth } from "../../context/AuthContext";
 import { BASE_URL } from "../../services/api";
 const EventDetail = () => {
@@ -24,6 +19,7 @@ const EventDetail = () => {
         });
         if (response.ok) {
           const data = await response.json();
+          console.log(data);
           setEvent(data);
         } else {
           console.error("Failed to fetch event details");
@@ -57,65 +53,67 @@ const EventDetail = () => {
 
   return (
     <div className="container mx-auto p-4">
-      <div className="max-w-2xl mx-auto bg-white rounded-lg overflow-hidden">
+      <div className="max-w-2xl mx-auto bg-white rounded-lg overflow-hidden shadow-md">
         <img
           className="w-full h-64 object-cover object-center"
           src={images[0]}
           alt={title}
         />
         <div className="p-6">
-          <h2 className="text-2xl font-semibold text-black mb-2">{title}</h2>
-          <p className="text-black mb-4">{description}</p>
+          <h2 className="text-3xl font-semibold text-black mb-4">{title}</h2>
+          <p className="text-gray-600 mb-6">{description}</p>
 
           <div className="flex items-center text-black mb-4">
             <Icon path={mdiCalendar} size={1} className="mr-2" />
-            <p>{new Date(date).toLocaleDateString()}</p>
+            <p className="font-semibold">Date:</p>
+            <p className="ml-2">{new Date(date).toLocaleDateString()}</p>
           </div>
 
           <div className="flex items-center text-black mb-4">
             <Icon path={mdiClockOutline} size={1} className="mr-2" />
-            <p>{time}</p>
+            <p className="font-semibold">Time:</p>
+            <p className="ml-2">{time}</p>
           </div>
 
           <div className="flex items-center text-black mb-4">
-            <Icon path={mdiLocationEnter} size={1} className="mr-2" />
-            <p>{venue}</p>
+            <Icon path={mdiMapMarker} size={1} className="mr-2" />
+            <p className="font-semibold">Venue:</p>
+            <p className="ml-2">{venue}</p>
           </div>
 
           <div className="flex items-center text-black mb-4">
             <Icon path={mdiTicket} size={1} className="mr-2" />
-            <p>{`Price: $${ticketPrice}`}</p>
+            <p className="font-semibold">{`Price:`}</p>
+            <p className="ml-2">{`$${ticketPrice}`}</p>
           </div>
 
           <div className="flex items-center text-black mb-4">
-            <p>{`Total Seats: ${totalSeats}`}</p>
-            <p className="ml-4">{`Available Seats: ${availableSeats}`}</p>
+            <p className="font-semibold">{`Total Seats:`}</p>
+            <p className="ml-2">{totalSeats}</p>
+            <p className="ml-4 font-semibold">{`Available Seats:`}</p>
+            <p className="ml-2">{availableSeats}</p>
           </div>
 
-          <div className="flex items-center text-black mb-4">
-            <p>{`Created By: ${createdBy}`}</p>
+          {/* <div className="flex items-center text-gray-700 mb-4">
+            <p className="font-semibold">{`Created At:`}</p>
+            <p className="ml-2">{new Date(createdAt).toLocaleString()}</p>
           </div>
 
-          <div className="flex items-center text-black mb-4">
-            <h2 className="font-semibold text-lg">{`Created At: ${new Date(
-              createdAt
-            ).toLocaleString()}`}</h2>
-          </div>
-
-          <div className="flex items-center text-black mb-4">
-            <p>{`Updated At: ${new Date(updatedAt).toLocaleString()}`}</p>
-          </div>
+          <div className="flex items-center text-gray-700 mb-6">
+            <p className="font-semibold">{`Updated At:`}</p>
+            <p className="ml-2">{new Date(updatedAt).toLocaleString()}</p>
+          </div> */}
 
           <div className="flex justify-end">
-            {userData.role == "admin" ? (
+            {userData.role === "admin" ? (
               <Link
                 to={`/admin/update-event/${event._id}`}
-                className="px-4 py-2 bg-black text-white rounded-md hover:bg-black"
+                className="px-4 py-2 bg-black text-white rounded-md h"
               >
                 Update Event
               </Link>
             ) : (
-              <button className="px-4 py-2 bg-black text-white rounded-md hover:bg-black">
+              <button className="px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-700">
                 Book Now
               </button>
             )}

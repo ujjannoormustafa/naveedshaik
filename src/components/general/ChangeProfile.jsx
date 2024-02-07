@@ -1,10 +1,11 @@
 // ChangeProfile.jsx
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { mdiCamera } from "@mdi/js";
+import { mdiCamera, mdiCheck, mdiAccount, mdiPhone, mdiEmail } from "@mdi/js";
 import Icon from "@mdi/react";
 import { useAuth } from "../../context/AuthContext";
 import { BASE_URL } from "../../services/api";
+
 const ChangeProfile = () => {
   const { token, userData } = useAuth();
   const [NewuserData, setUserData] = useState({
@@ -57,13 +58,12 @@ const ChangeProfile = () => {
         console.error("User token not available");
         return;
       }
-      console.log(token);
+
       const response = await axios.post(
         `${BASE_URL}/api/user/change-profile`,
         formData,
         {
           headers: {
-            "Content-Type": "multipart/form-data",
             Authorization: token,
           },
         }
@@ -83,11 +83,9 @@ const ChangeProfile = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto p-6 bg-white rounded-md shadow-md">
-      <h2 className="text-2xl font-semibold mb-4">Change Profile</h2>
-
-      <div className="mb-4 relative">
-        <div className="rounded-full overflow-hidden w-24 h-24 mx-auto">
+    <div className="max-w-screen-xl h-full mx-auto p-6 bg-white rounded-md  flex flex-col  lg:flex-row justify-center items-center">
+      <div className="relative mb-6">
+        <div className="rounded-md overflow-hidden w-96 h-96 mx-auto">
           <img
             src={NewuserData.profileImage}
             alt="Profile"
@@ -96,13 +94,13 @@ const ChangeProfile = () => {
         </div>
         <label
           htmlFor="profileImageInput"
-          className="cursor-pointer absolute bottom-0 right-0 bg-blue-500 p-2 rounded-full text-white"
+          className="cursor-pointer bg-white text-white p-2 m-2 rounded-full absolute bottom-0 right-0"
         >
           <Icon
             path={mdiCamera}
-            title="Toggle Password"
-            size={1}
-            color="black"
+            title="Upload Profile Image"
+            size={2}
+            className="bg-transparent text-black "
           />
         </label>
         <input
@@ -114,63 +112,50 @@ const ChangeProfile = () => {
         />
       </div>
 
-      <div className="mb-4">
-        <label
-          htmlFor="fullName"
-          className="block text-sm font-medium text-gray-600"
-        >
-          Full Name
-        </label>
-        <input
-          type="text"
-          id="fullName"
-          className="mt-1 p-2 w-full border rounded-md focus:outline-none focus:border-blue-500"
-          value={NewuserData.full_name}
-          readOnly
-        />
+      <div className="w-full max-w-md p-5">
+        <div className="mb-6 flex items-center">
+          <Icon
+            path={mdiAccount}
+            title="Full Name"
+            size={2}
+            className="text-black mr-4"
+          />
+          <div className="text-lg font-semibold text-black">
+            {NewuserData.full_name}
+          </div>
+        </div>
+
+        <div className="mb-6 flex items-center">
+          <Icon
+            path={mdiPhone}
+            title="Phone Number"
+            size={2}
+            className="text-black mr-4"
+          />
+          <div className="text-lg font-semibold text-black">
+            {NewuserData.phone_number}
+          </div>
+        </div>
+
+        <div className="mb-6 flex items-center">
+          <Icon
+            path={mdiEmail}
+            title="Email"
+            size={2}
+            className="text-black mr-4"
+          />
+          <div className="text-lg font-semibold text-black">
+            {NewuserData.email}
+          </div>
+        </div>
+
+        {/* {uploadStatus && (
+          <p className="mt-4 flex items-center text-green-600">
+            <Icon path={mdiCheck} title="Success" size={1.5} className="mr-2" />
+            {uploadStatus}
+          </p>
+        )} */}
       </div>
-
-      <div className="mb-4">
-        <label
-          htmlFor="phoneNumber"
-          className="block text-sm font-medium text-gray-600"
-        >
-          Phone Number
-        </label>
-        <input
-          type="text"
-          id="phoneNumber"
-          className="mt-1 p-2 w-full border rounded-md focus:outline-none focus:border-blue-500"
-          value={NewuserData.phone_number}
-          readOnly
-        />
-      </div>
-
-      <div className="mb-4">
-        <label
-          htmlFor="email"
-          className="block text-sm font-medium text-gray-600"
-        >
-          Email
-        </label>
-        <input
-          type="text"
-          id="email"
-          className="mt-1 p-2 w-full border rounded-md focus:outline-none focus:border-blue-500"
-          value={NewuserData.email}
-          readOnly
-        />
-      </div>
-
-      <button
-        className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600"
-        onClick={handleUpload}
-        disabled={!newProfileImage}
-      >
-        Upload Profile Image
-      </button>
-
-      {uploadStatus && <p className="mt-2 text-green-600">{uploadStatus}</p>}
     </div>
   );
 };

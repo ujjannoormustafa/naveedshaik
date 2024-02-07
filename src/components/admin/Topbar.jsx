@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { mdiMenu, mdiMagnify, mdiAccountCircle } from "@mdi/js";
 import Icon from "@mdi/react";
-
+import { useAuth } from "../../context/AuthContext";
 const DropdownMenu = ({ onProfileClick, onLogoutClick, closeDropdown }) => {
   return (
     <div
@@ -27,6 +27,7 @@ const DropdownMenu = ({ onProfileClick, onLogoutClick, closeDropdown }) => {
 const Topbar = ({ onToggleSidebar }) => {
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const dropdownRef = useRef(null);
+  const { userData, toke } = useAuth();
 
   const handleProfileClick = () => {
     console.log("User profile clicked");
@@ -65,7 +66,15 @@ const Topbar = ({ onToggleSidebar }) => {
 
       <div className="relative">
         <div className="cursor-pointer" onClick={toggleDropdown}>
-          <Icon path={mdiAccountCircle} size={1.5} color="white" />
+          {userData.profileImage ? (
+            <img
+              class="w-10 h-10 rounded-full"
+              src={userData.profileImage}
+              alt="Rounded avatar"
+            />
+          ) : (
+            <Icon path={mdiAccountCircle} size={1.5} color="white" />
+          )}
         </div>
       </div>
       <div

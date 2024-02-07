@@ -17,7 +17,7 @@ const EventCalendar = () => {
     const fetchEvents = async () => {
       try {
         // Fetch events from your API
-        const response = await fetch(`{${BASE_URL}/api/event/event-list}`, {
+        const response = await fetch(`${BASE_URL}/api/event/event-list`, {
           headers: {
             Authorization: token, // Add your authorization token
           },
@@ -59,11 +59,8 @@ const EventCalendar = () => {
     const { event } = arg;
     const parsedEvent = {
       id: event.id,
-      title: event.title,
-      description: event.extendedProps.description,
-      start: event.start ? new Date(event.start) : null,
-      end: event.end ? new Date(event.end) : null,
     };
+    window.location.href = `/admin/${parsedEvent.id}`;
     setSelectedEvent(parsedEvent);
   };
 
@@ -90,7 +87,7 @@ const EventCalendar = () => {
         ? "prev,next,today"
         : "dayGridMonth,timeGridWeek,timeGridDay",
     },
-    aspectRatio: isMobile ? 1.5 : 2.5,
+    aspectRatio: isMobile ? 1.2 : 2.5,
     height: isMobile ? "auto" : "100vh",
     fixedWeekCount: false,
     slotEventOverlap: false,
@@ -98,7 +95,7 @@ const EventCalendar = () => {
     dayMaxEventRows: 2,
     moreLinkText: "View more",
     draggable: true,
-    eventClick: handleEventClick, // Attach event click handler
+    eventClick: handleEventClick,
   };
 
   return (
@@ -107,23 +104,6 @@ const EventCalendar = () => {
       <div className="lg:w-3/4 mx-auto h-full">
         <FullCalendar {...calendarOptions} />
       </div>
-
-      {/* Modal for displaying event details */}
-      <Modal
-        isOpen={selectedEvent !== null}
-        onRequestClose={closeModal}
-        contentLabel="Event Details"
-      >
-        {selectedEvent && (
-          <div>
-            <h2>{selectedEvent.title}</h2>
-            <p>{selectedEvent.description}</p>
-            <p>Start: {selectedEvent.start.toISOString()}</p>
-            <p>End: {selectedEvent.end.toISOString()}</p>
-            <button onClick={closeModal}>Close</button>
-          </div>
-        )}
-      </Modal>
     </div>
   );
 };

@@ -23,10 +23,11 @@ import Logo from "../../resources/images/logo.png";
 import "./ResponsiveSidebar.css";
 import { click } from "@testing-library/user-event/dist/click";
 import { Link } from "react-router-dom";
-
+import { useAuth } from "../../context/AuthContext";
 const MySidebar = () => {
   const [isSidebarCollapsed, setSidebarCollapsed] = useState(false);
-
+  const { userData, toke } = useAuth();
+  console.log("sidebar userData: ", userData);
   const componentRef = useRef(null);
   const handleClickOutside = (event) => {
     if (componentRef.current && !componentRef.current.contains(event.target)) {
@@ -102,7 +103,7 @@ const MySidebar = () => {
         <MenuItem icon={<Icon path={mdiHome} size={1} />}>
           {" "}
           <Link
-            to="/"
+            to="/admin"
             style={{
               color: "white",
             }}

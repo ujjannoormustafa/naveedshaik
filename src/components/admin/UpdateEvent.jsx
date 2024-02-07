@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import {
   mdiCalendar,
   mdiClockTimeThree,
@@ -143,10 +145,48 @@ const UpdateEvent = () => {
       if (response.ok) {
         console.log("Event updated successfully!");
         // You can redirect the user or perform other actions after successful update
+        toast.success("Event Updated successfully!", {
+          position: "top-right",
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
       } else {
+        // Handle errors if the request was not successful
+        const responseData = await response.json();
+        console.log(responseData);
+        toast.error(
+          responseData?.message
+            ? responseData.message
+            : responseData.statusText,
+          {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          }
+        );
         console.error("Failed to update event");
       }
     } catch (error) {
+      toast.error(error.message, {
+        position: "top-right",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
       console.error("Error updating event:", error);
     }
   };
@@ -360,7 +400,7 @@ const UpdateEvent = () => {
               Ticket Price
             </label>
             <input
-              type="text"
+              type="number"
               id="eventPrice"
               name="ticketPrice"
               onChange={handleInputChange}
@@ -377,6 +417,7 @@ const UpdateEvent = () => {
           Update Event
         </button>
       </form>
+      <ToastContainer />
     </div>
   );
 };
