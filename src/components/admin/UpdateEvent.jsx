@@ -68,11 +68,47 @@ const UpdateEvent = () => {
     const files = e.target.files;
     setNewPhotos([...newPhotos, ...files]);
   };
+  const handleRemoveLocalPhoto = (index) => {
+    // Copy the newPhotos array
+    const updatedNewPhotos = [...newPhotos];
 
-  const handleRemovePhoto = (index) => {
-    // const updatedPhotos = [...eventInfo.photos];
-    // updatedPhotos.splice(index, 1);
-    // setEventInfo({ ...eventInfo, photos: updatedPhotos });
+    // Remove the photo at the specified index
+    updatedNewPhotos.splice(index, 1);
+
+    // Update the newPhotos state
+    setNewPhotos(updatedNewPhotos);
+  };
+
+  const handleRemovePhoto = async (index) => {
+    try {
+      const imageLinkToDelete = eventInfo.photos[index];
+
+      // Make API request to delete the image
+      const response = await fetch(`${BASE_URL}/api/event/delete-image`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token,
+        },
+        body: JSON.stringify({
+          eventId,
+          imageLink: imageLinkToDelete,
+        }),
+      });
+
+      if (response.ok) {
+        console.log("Image deleted successfully!");
+
+        // Update state to rerender the component
+        const updatedPhotos = [...eventInfo.photos];
+        updatedPhotos.splice(index, 1);
+        setEventInfo({ ...eventInfo, photos: updatedPhotos });
+      } else {
+        console.error("Failed to delete image");
+      }
+    } catch (error) {
+      console.error("Error deleting image:", error);
+    }
   };
 
   const handleUpdateEvent = async () => {
@@ -90,20 +126,15 @@ const UpdateEvent = () => {
       formData.append("totalSeats", parseInt(eventInfo.totalSeats));
       formData.append("ticketPrice", parseFloat(eventInfo.ticketPrice));
 
-      // Append existing Cloudinary URLs
-      eventInfo.photos.forEach((photo, index) => {
-        formData.append(`photos[${index}]`, photo);
-      });
-
       // Append new photos
       newPhotos.forEach((file, index) => {
-        formData.append(`newPhotos[${index}]`, file);
+        formData.append("images", file);
       });
+      console.log(formData);
       // Send the update request
-      const response = await fetch(`{${BASE_URL}/api/event/update-event}`, {
+      const response = await fetch(`${BASE_URL}/api/event/update-event`, {
         method: "PUT",
         headers: {
-          "Content-Type": "application/json",
           Authorization: token,
         },
         body: formData,
@@ -172,43 +203,86 @@ const UpdateEvent = () => {
             accept="image/*"
             className="mt-1 p-2 border border-gray-300 rounded-md w-full"
           />
-          {eventInfo.photos.length > 0 && (
-            <div className="m-2 flex flex-wrap ">
-              {eventInfo.photos.map((photo, index) => (
-                <div key={index} className="relative bg-green">
-                  <img
-                    src={
-                      photo instanceof File ? URL.createObjectURL(photo) : photo
-                    }
-                    alt={`Event Photo ${index + 1}`}
-                    width="100%"
-                    height="100%"
-                    className="h-16 w-16 object-contain m-4 rounded-md sm:h-20 sm:w-20 md:h-24 md:w-24 lg:h-32 lg:w-32 xl:h-40 xl:w-40"
-                  />
-                  <button
-                    type="button"
-                    className="absolute top-0 right-0  p-1 bg-white rounded-full text-red-500 hover:bg-red-100 focus:outline-none"
-                    onClick={() => handleRemovePhoto(index)}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      className="h-7 w-7"
+          <div className="m-2 flex flex-wrap ">
+            {eventInfo.photos.length > 0 && (
+              <>
+                {eventInfo.photos.map((photo, index) => (
+                  <div key={index} className="relative bg-green">
+                    <img
+                      src={
+                        photo instanceof File
+                          ? URL.createObjectURL(photo)
+                          : photo
+                      }
+                      alt={`Event Photo ${index + 1}`}
+                      width="100%"
+                      height="100%"
+                      className="h-16 w-16 object-contain m-4 rounded-md sm:h-20 sm:w-20 md:h-24 md:w-24 lg:h-32 lg:w-32 xl:h-40 xl:w-40"
+                    />
+                    <button
+                      type="button"
+                      className="absolute top-0 right-0  p-1 bg-white rounded-full text-red-500 hover:bg-red-100 focus:outline-none"
+                      onClick={() => handleRemovePhoto(index)}
                     >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M6 18L18 6M6 6l12 12"
-                      />
-                    </svg>
-                  </button>
-                </div>
-              ))}
-            </div>
-          )}
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        className="h-7 w-7"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M6 18L18 6M6 6l12 12"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                ))}
+              </>
+            )}
+            {newPhotos.length > 0 && (
+              <>
+                {newPhotos.map((photo, index) => (
+                  <div key={index} className="relative bg-green">
+                    <img
+                      src={
+                        photo instanceof File
+                          ? URL.createObjectURL(photo)
+                          : photo
+                      }
+                      alt={`Event Photo ${index + 1}`}
+                      width="100%"
+                      height="100%"
+                      className="h-16 w-16 object-contain m-4 rounded-md sm:h-20 sm:w-20 md:h-24 md:w-24 lg:h-32 lg:w-32 xl:h-40 xl:w-40"
+                    />
+                    <button
+                      type="button"
+                      className="absolute top-0 right-0  p-1 bg-white rounded-full text-red-500 hover:bg-red-100 focus:outline-none"
+                      onClick={() => handleRemoveLocalPhoto(index)}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        className="h-7 w-7"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M6 18L18 6M6 6l12 12"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                ))}
+              </>
+            )}
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
