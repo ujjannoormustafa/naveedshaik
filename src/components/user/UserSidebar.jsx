@@ -23,7 +23,7 @@ import Logo from "../../resources/images/logo.png";
 import "./ResponsiveSidebar.css";
 import { click } from "@testing-library/user-event/dist/click";
 import { Link } from "react-router-dom";
-const MySidebar = () => {
+const UserSidebar = () => {
   const [isSidebarCollapsed, setSidebarCollapsed] = useState(false);
   
   const componentRef = useRef(null);
@@ -126,12 +126,12 @@ const MySidebar = () => {
         <SubMenu title="Events" icon={<Icon path={mdiCalendarStar} size={1} />}>
           <MenuItem>
             <Link
-              to="/admin/create-event"
+              to="/user/view-events"
               style={{
                 color: "white",
               }}
             >
-              Create Event
+              View Events
             </Link>
           </MenuItem>
           <MenuItem>
@@ -141,7 +141,17 @@ const MySidebar = () => {
                 color: "white",
               }}
             >
-              Event List
+              Booked Events
+            </Link>
+          </MenuItem>
+          <MenuItem>
+            <Link
+              to="/user/view-events"
+              style={{
+                color: "white",
+              }}
+            >
+              past Events
             </Link>
           </MenuItem>
           {/* Add more menu items as needed */}
@@ -208,4 +218,4 @@ const MySidebar = () => {
     </ProSidebar>
   );
 };
-export default MySidebar;
+export default UserSidebar;

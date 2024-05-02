@@ -113,9 +113,11 @@ const EventDetail = () => {
                 Update Event
               </Link>
             ) : (
-              <button className="px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-700">
+              <Link 
+              to={`/user/checkout/${event._id}`}
+              className="px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-700">
                 Book Now
-              </button>
+              </Link>
             )}
           </div>
         </div>
