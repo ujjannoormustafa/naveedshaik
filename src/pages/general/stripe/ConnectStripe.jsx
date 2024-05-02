@@ -98,6 +98,7 @@ function ConnectStripe() {
         progress: undefined,
         theme: "light",
       });
+      setConnected(true)
       // Handle success
     } catch (error) {
 
