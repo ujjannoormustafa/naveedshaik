@@ -11,7 +11,7 @@ import { useAuth } from '../../context/AuthContext';
 import { BASE_URL } from '../../services/api';
 import { Link } from 'react-router-dom';
 import CheckoutForm from './CheckoutForm';
-const stripePromise = loadStripe('pk_test_51PA7r5J1IZg6T88pHjYSJm9f10KWAYPxlXDn5fyyj6hCManIFnXgrzBpTU3o0ndiwGWszPCXbpy3i3WRm8F0AILZ00imxaNZfm');
+const stripePromise = loadStripe('pk_test_51Oda4PHSvDuMR6pwhSgqNrMgZNSlmr4LUGSGwPSuUpG7ns3YltEjeTW7oOIGOkKk8EmY7yt8MnxRXzhRin0sxqcR0045cbxygI');
 
 
   
