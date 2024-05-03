@@ -5,33 +5,23 @@ import {
   ConnectAccountOnboarding,
   ConnectAccountManagement
 } from "@stripe/react-connect-js";
-import useStripeConnect from "../../../context/UseSttipeConnect";
+import { useStripeConnect } from "../../../context/UseSttipeConnect";
 
 export default function AccountManagement() {
-  const stripeConnectInstance = useStripeConnect();
+  const connectInstance = useStripeConnect();
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    if (stripeConnectInstance) {
-        setLoading(false);
-    }
-}, [stripeConnectInstance]);
-
-if (loading) {
-    return (
-        <div className="container">
-            <p>Loading...</p>
-        </div>
-    );
-}
+ 
 
   return (
     <div className="container">
-      {stripeConnectInstance && (
-        <ConnectComponentsProvider connectInstance={stripeConnectInstance}>
+      {connectInstance ? (
+        <ConnectComponentsProvider connectInstance={connectInstance}>
         <ConnectAccountManagement />
       </ConnectComponentsProvider>
-      )}
+      ):
+      <h1>Loading</h1>
+      }
     </div>
   );
 }

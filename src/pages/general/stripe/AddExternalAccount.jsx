@@ -6,29 +6,17 @@ import {
   ConnectAccountOnboarding
 } from "@stripe/react-connect-js";
 import { useAuth } from "../../../context/AuthContext";
-import useStripeConnect from "../../../context/UseSttipeConnect";
+import { useStripeConnect } from "../../../context/UseSttipeConnect";
 export default function AddExternalAccount() {
   
   const [loading, setLoading] = useState(true);
-  const stripeConnectInstance = useStripeConnect();
-  useEffect(() => {
-    if (stripeConnectInstance) {
-        setLoading(false);
-    }
-}, [stripeConnectInstance]);
-
-if (loading) {
-    return (
-        <div className="container">
-            <p>Loading...</p>
-        </div>
-    );
-}
+  const connectInstance = useStripeConnect();
+ 
 
   return (
     
     <div className="container">
-        <ConnectComponentsProvider connectInstance={stripeConnectInstance}>
+        <ConnectComponentsProvider connectInstance={connectInstance}>
           {/* <ConnectPayments /> */}
           <ConnectAccountOnboarding
           onExit={() => {

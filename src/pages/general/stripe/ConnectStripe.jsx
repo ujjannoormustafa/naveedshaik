@@ -134,7 +134,7 @@ function ConnectStripe() {
       {/* Input fields */}
       <div className="grid grid-cols-2 md:grid-cols-2 gap-4">
         <div>
-          <label lassName="block text-sm font-bold ml-3">Country:</label>
+          <label className="block text-sm font-bold ml-3">Country:</label>
           <input type="text" name="country" value={formData.country} onChange={handleChange}   className="input ml-3 p-2 border border-bold rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
  />
         </div>

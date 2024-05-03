@@ -5,15 +5,19 @@ import App from "./App";
 import { BrowserRouter } from "react-router-dom";
 // import reportWebVitals from './reportWebVitals';
 import { AuthProvider } from "./context/AuthContext";
+import { StripeConnectProvider } from "./context/UseSttipeConnect";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <React.StrictMode>
     <AuthProvider>
+        <StripeConnectProvider>
+
       <BrowserRouter>
         <App />
       </BrowserRouter>
+      </StripeConnectProvider>
+
     </AuthProvider>
-  </React.StrictMode>
+ 
 );
 
 // If you want to start measuring performance in your app, pass a function
