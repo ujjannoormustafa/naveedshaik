@@ -1,47 +1,35 @@
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
-import React, { useEffect, useState, useSyncExternalStore } from "react";
-import {
-  PaymentElement,
-  useStripe,
-  useElements
-} from "@stripe/react-stripe-js";
+import React, { useEffect, useState } from "react";
 import { useParams } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { BASE_URL } from '../../services/api';
 import { Link } from 'react-router-dom';
 import CheckoutForm from './CheckoutForm';
+
 const stripePromise = loadStripe('pk_test_51Oda4PHSvDuMR6pwhSgqNrMgZNSlmr4LUGSGwPSuUpG7ns3YltEjeTW7oOIGOkKk8EmY7yt8MnxRXzhRin0sxqcR0045cbxygI');
 
-
-  
-
 function Checkout() {
-  const [clientSecret, setClientSecret] = useState();
+  const [clientSecret, setClientSecret] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [message,setMessage] = useState(null)
+  const [message, setMessage] = useState(null);
   const { eventId } = useParams();
-const {token} = useAuth()
-  useEffect(() => {
+  const { token } = useAuth();
+
+    useEffect(() => {
     const fetchClientSecret = async () => {
       try {
-        const response = await fetch(`${BASE_URL}/api/stripe/checkout/${eventId}`, {
+        const response = await fetch(`http://localhost:5500/api/stripe/checkout/${eventId}`, {
           method: "POST",
-          headers: { 
-            
-            "Content-Type": "application/json",
-            Authorization: token
-        },
-          
+          headers: {
+             "Content-Type": "application/json",
+            Authorization: token,
+            },
+
         });
 
         if (!response.ok) {
-            const responseData = await response.json(); // Await the JSON parsing
-            console.log(responseData.message);
-            setMessage(responseData.message)
-            setIsLoading(false)
-            return;
-            // setMessage(responseData);
+          throw new Error("Network response was not ok");
         }
 
         const data = await response.json();
@@ -57,10 +45,6 @@ const {token} = useAuth()
     fetchClientSecret();
   }, []);
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
- 
 
   return (
     <>
@@ -81,8 +65,6 @@ const {token} = useAuth()
       )}
     </>
   );
-  
-  
 }
 
 export default Checkout;

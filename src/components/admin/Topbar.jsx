@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { mdiMenu, mdiMagnify, mdiAccountCircle } from "@mdi/js";
 import Icon from "@mdi/react";
 import { useAuth } from "../../context/AuthContext";
+import { Link } from "react-router-dom";
 const DropdownMenu = ({ onProfileClick, onLogoutClick, closeDropdown }) => {
   return (
     <div
@@ -16,10 +17,10 @@ const DropdownMenu = ({ onProfileClick, onLogoutClick, closeDropdown }) => {
         <Icon path={mdiAccountCircle} size={1} color="black" />
         Profile
       </div>
-      <div className="menu-item" onClick={onLogoutClick}>
+      <Link to='/login' className="menu-item" onClick={onLogoutClick}>
         <Icon path={mdiAccountCircle} size={1} color="black" />
         Logout
-      </div>
+      </Link>
     </div>
   );
 };
@@ -117,12 +118,12 @@ const Topbar = ({ onToggleSidebar }) => {
             </a>
           </li>
           <li>
-            <a
-              href="#"
+            <Link
+             to='/login'
               className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
             >
               Sign out
-            </a>
+            </Link>
           </li>
         </ul>
       </div>

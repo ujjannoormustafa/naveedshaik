@@ -70,7 +70,7 @@ const StripeConnectContext = React.createContext();
 export const useStripeConnect = () => useContext(StripeConnectContext);
 
 export const StripeConnectProvider = ({ children }) => {
-  const { token } = useAuth();
+  const { user,token } = useAuth();
   const [stripeConnectInstance, setStripeConnectInstance] = useState(null);
   const [clientSecret, setClientSecret] = useState(null);
 
@@ -99,8 +99,8 @@ export const StripeConnectProvider = ({ children }) => {
       console.error('An error occurred: ', error);
     }
   }
-  const connectInstance = loadConnectAndInitialize({
-    publishableKey: 'pk_test_51PA7r5J1IZg6T88pHjYSJm9f10KWAYPxlXDn5fyyj6hCManIFnXgrzBpTU3o0ndiwGWszPCXbpy3i3WRm8F0AILZ00imxaNZfm',
+  var connectInstance = loadConnectAndInitialize({
+    publishableKey: 'pk_test_51Oda4PHSvDuMR6pwhSgqNrMgZNSlmr4LUGSGwPSuUpG7ns3YltEjeTW7oOIGOkKk8EmY7yt8MnxRXzhRin0sxqcR0045cbxygI',
     fetchClientSecret: fetchClientSecret,
     appearance: {
       variables: {
@@ -108,6 +108,8 @@ export const StripeConnectProvider = ({ children }) => {
       },
     }
   });
+ 
+  
 
   return (
     <StripeConnectContext.Provider value={connectInstance}>

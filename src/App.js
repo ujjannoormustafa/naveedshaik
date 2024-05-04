@@ -1,7 +1,7 @@
 import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import AdminLayout from "./Layouts/AdminLayout";
-// import UserLayout from "./Layouts/UserLayout";
+import UserLayout from "./Layouts/UserLayout";
 import ChangeProfile from "./components/general/ChangeProfile";
 import HomePage from "./pages/admin/HomePage";
 import AddEventPage from "./pages/admin/AddEventPage";
@@ -18,11 +18,11 @@ import ViewBalance from "./pages/general/stripe/ViewBalance";
 import AccountRequirements from "./pages/general/stripe/AccountRequirements";
 import AccountManagement from "./pages/general/stripe/AccountManagement";
 import ViewPayments from "./pages/general/stripe/ViewPayments";
+import BankAccountForm from "./pages/general/stripe/BankAccountForm";
 
-
-// import UserHomePage from "./pages/user/UserHomePage";
-// import UserViewEventsPage from "./pages/user/UserViewEventsPage";
-// import CheckoutPage from "./pages/CheckoutPage";
+import UserHomePage from "./pages/user/UserHomePage";
+import UserViewEventsPage from "./pages/user/UserViewEventsPage";
+import CheckoutPage from "./pages/CheckoutPage";
 import UserPaymentSuccessPage from "./pages/user/UserPaymentSuccessPage";
 import { useAuth } from "./context/AuthContext"; // replace with the actual path
 
@@ -120,6 +120,9 @@ function App() {
         <Route path="add-external-account"  element={
               <ProtectedRoute element={<AddExternalAccount />} role="admin" />
             }  />
+             <Route path="connect-bank-account"  element={
+              <ProtectedRoute element={<BankAccountForm />} role="admin" />
+            }  />
         <Route path="view-balance"   
           element={
               <ProtectedRoute element={<ViewBalance />} role="admin" />
@@ -137,7 +140,7 @@ function App() {
        
 
        //User Routes
-       {/* <Route path="/user/*" element={<UserLayout />}>
+       <Route path="/user/*" element={<UserLayout />}>
           <Route
             index
             element={<ProtectedRoute element={<UserHomePage />} role="user" />}
@@ -171,7 +174,7 @@ function App() {
               <ProtectedRoute element={<UserPaymentSuccessPage />} role="user" />
             }
           /> 
-             
+         {/*     
           <Route
             path="calendar"
             element={<ProtectedRoute element={<CalendarPage />} role="admin" />}
@@ -224,7 +227,7 @@ function App() {
           element={
               <ProtectedRoute element={<ViewPayments />} role="admin" />
             } /> */}
-        {/* </Route> */}
+        </Route>
         
       </Routes> 
     </div>

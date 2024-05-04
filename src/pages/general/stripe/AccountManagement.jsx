@@ -17,7 +17,7 @@ export default function AccountManagement() {
     <div className="container">
       {connectInstance ? (
         <ConnectComponentsProvider connectInstance={connectInstance}>
-        <ConnectAccountManagement />
+        <ConnectAccountOnboarding />
       </ConnectComponentsProvider>
       ):
       <h1>Loading</h1>

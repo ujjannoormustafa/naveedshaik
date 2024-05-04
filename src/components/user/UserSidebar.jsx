@@ -166,7 +166,7 @@ const UserSidebar = () => {
             Calendar
           </Link>
         </MenuItem>
-        <SubMenu title="Payments" icon={<Icon path={mdiCalendarStar} size={1} />}>
+        {/* <SubMenu title="Payments" icon={<Icon path={mdiCalendarStar} size={1} />}>
           <MenuItem>
             <Link
               to="/admin/connect-account"
@@ -207,8 +207,8 @@ const UserSidebar = () => {
               All Payments
             </Link>
           </MenuItem>
-          {/* Add more menu items as needed */}
-        </SubMenu>
+          {/* Add more menu items as needed 
+        </SubMenu> */}
       </Menu>
 
       {/* Toggle button for mobile */}

@@ -179,6 +179,16 @@ const MySidebar = () => {
           </MenuItem>
           <MenuItem>
             <Link
+              to="/admin/connect-bank-account"
+              style={{
+                color: "white",
+              }}
+            >
+              Connect Bank Account
+            </Link>
+          </MenuItem>
+          <MenuItem>
+            <Link
               to="/admin/view-balance"
               style={{
                 color: "white",
@@ -197,6 +207,7 @@ const MySidebar = () => {
               All Payments
             </Link>
           </MenuItem>
+
           {/* Add more menu items as needed */}
         </SubMenu>
       </Menu>

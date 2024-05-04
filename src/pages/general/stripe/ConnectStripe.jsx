@@ -72,7 +72,24 @@ function ConnectStripe() {
       });
       const responseData = await response.json();
 
-      if(responseData.message === "Account already connected"){
+     
+
+
+      if(responseData.status === 200){
+        toast.success(responseData.message, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+        setConnected(true)
+        // Handle success
+
+      }else{
         toast.error(responseData.message, {
           position: "top-right",
           autoClose: 5000,
@@ -85,21 +102,7 @@ function ConnectStripe() {
         });
         return;
       }
-
-
-      console.log('Connected account created:', responseData);
-      toast.success(responseData.message, {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
-      setConnected(true)
-      // Handle success
+     
     } catch (error) {
 
       console.error('Error creating connected account:', error.message);

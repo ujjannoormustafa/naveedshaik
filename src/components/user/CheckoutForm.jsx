@@ -6,6 +6,7 @@ import {
 } from "@stripe/react-stripe-js";
 import { BASE_URL } from "../../services/api";
 import { useParams } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 export default function CheckoutForm() {
   const stripe = useStripe();
   const elements = useElements();
