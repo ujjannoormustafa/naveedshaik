@@ -4,7 +4,7 @@ import {
   useStripe,
   useElements
 } from "@stripe/react-stripe-js";
-import { BASE_URL } from "../../services/api";
+import { BASE_URL,SITE_URL } from "../../services/api";
 import { useParams } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -102,7 +102,7 @@ export default function CheckoutForm() {
       elements,
       confirmParams: {
         // Make sure to change this to your payment completion page
-        return_url: `http://localhost:3000/user/checkout/${eventId}`
+        return_url: `${SITE_URL}/user/checkout/${eventId}`
       },
     });
 
