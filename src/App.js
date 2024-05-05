@@ -169,7 +169,7 @@ function App() {
             }
           />
            <Route
-            path="payment-successs"
+            path="payment-success"
             element={
               <ProtectedRoute element={<UserPaymentSuccessPage />} role="user" />
             }
