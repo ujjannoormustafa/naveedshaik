@@ -19,7 +19,7 @@ function Checkout() {
     useEffect(() => {
     const fetchClientSecret = async () => {
       try {
-        const response = await fetch(`http://localhost:5500/api/stripe/checkout/${eventId}`, {
+        const response = await fetch(`${BASE_URL}/api/stripe/checkout/${eventId}`, {
           method: "POST",
           headers: {
              "Content-Type": "application/json",
