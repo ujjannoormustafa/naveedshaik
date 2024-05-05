@@ -7,16 +7,17 @@ import {
 import { BASE_URL } from "../../services/api";
 import { useParams } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 export default function CheckoutForm() {
+  const navigate = useNavigate();
   const stripe = useStripe();
   const elements = useElements();
   const eventId = useParams().eventId
   console.log("dvent ID: ",eventId)
-
+  const { token } = useAuth();
   const [message, setMessage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [accountStatus, setAccountStatus] = useState(null);
-
   useEffect(() => {
     if (!stripe) {
       return;
@@ -30,7 +31,7 @@ export default function CheckoutForm() {
       return;
     }
 
-    stripe.retrievePaymentIntent(clientSecret).then(({ paymentIntent, error }) => {
+    stripe.retrievePaymentIntent(clientSecret).then(async({ paymentIntent, error }) => {
       if (error && error.type !== "validation_error") {
         // Handle other errors
         console.error(error.message);
@@ -42,7 +43,30 @@ export default function CheckoutForm() {
         case "succeeded":
           console.log("success")
           try{
-              fetch(`${BASE_URL}/api/ticket/buy-ticket/${eventId}`)
+             const response = await  fetch(`${BASE_URL}/api/ticket/buy-ticket/${eventId}`,
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: token,
+                },
+              
+              
+              
+              }
+            
+            )
+            if (!response.ok) {
+              setMessage("Error: Something went wrong. Please try again.");
+            }else{
+              const data = await response.json();
+              console.log("data",data)
+              if(data.message === "Ticket purchased successfully"){
+                setMessage("Payment succeeded!");
+                navigate(`/user/payment-success`, { replace: true });
+              }
+
+            }
           }catch(e){
 
           }
