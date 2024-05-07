@@ -46,6 +46,7 @@ const ChangeProfile = () => {
 
   const handleFileChange = (event) => {
     setNewProfileImage(event.target.files[0]);
+    console.log("New Profile Image: " + JSON.stringify(event.target.files[0]))
     handleUpload();
   };
 

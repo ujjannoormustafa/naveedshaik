@@ -27,10 +27,9 @@ import UserPaymentSuccessPage from "./pages/user/UserPaymentSuccessPage";
 import { useAuth } from "./context/AuthContext"; // replace with the actual path
 
 
+
 const ProtectedRoute = ({ element, role }) => {
-  console.log("publishable key: ",process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY)
   const { isLoggedIn, userData,token } = useAuth();
-  console.log(token);
   if (!isLoggedIn) {
     return <Navigate to="/login" />;
   }
