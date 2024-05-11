@@ -7,7 +7,7 @@ import { BASE_URL } from '../../services/api';
 import { Link } from 'react-router-dom';
 import CheckoutForm from './CheckoutForm';
 
-const stripePromise = loadStripe('pk_test_51Oda4PHSvDuMR6pwhSgqNrMgZNSlmr4LUGSGwPSuUpG7ns3YltEjeTW7oOIGOkKk8EmY7yt8MnxRXzhRin0sxqcR0045cbxygI');
+const stripePromise = loadStripe('pk_live_51Oda4PHSvDuMR6pwVmcCmszQnbOosphNs3Xpzl0h57BH2idPzuBRXiNgfXpuTXPHF5QPqMPHxMULCChp7fzG11R600irHtNpUs');
 
 function Checkout() {
   const [clientSecret, setClientSecret] = useState(null);

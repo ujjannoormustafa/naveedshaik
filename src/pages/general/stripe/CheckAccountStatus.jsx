@@ -3,11 +3,19 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../../../context/AuthContext';
 import axios from 'axios';
 import { BASE_URL } from '../../../services/api';
+import {
+  ConnectNotificationBanner,
+  ConnectComponentsProvider,
+} from '@stripe/react-connect-js';
+import { useStripeConnect } from '../../../context/UseSttipeConnect';
+
 
 function CheckAccountStatus() {
   const { token } = useAuth();
   const [data, setData] = useState(null);
   const [connected, setConnected] = useState(false);
+  const connectInstance = useStripeConnect();
+
 
   useEffect(() => {
     const checkAccount = async () => {
@@ -37,6 +45,10 @@ function CheckAccountStatus() {
   }
 
   return (
+    <>
+     <ConnectComponentsProvider connectInstance={connectInstance}>
+      <ConnectNotificationBanner />
+    </ConnectComponentsProvider>
     <div className="container mx-auto p-8">
       {connected ? (
         <div className="mt-8">
@@ -84,7 +96,6 @@ function CheckAccountStatus() {
                     )}
                   </div>
 
-                  {/* Add other requirements sections here */}
 
                 </>
               )}
@@ -103,7 +114,6 @@ function CheckAccountStatus() {
                     )}
                   </div>
 
-                  {/* Add other requirements sections here */}
 
                 </>
               )}
@@ -122,7 +132,6 @@ function CheckAccountStatus() {
                     )}
                   </div>
 
-                  {/* Add other requirements sections here */}
 
                 </>
               )}
@@ -141,7 +150,6 @@ function CheckAccountStatus() {
                     )}
                   </div>
 
-                  {/* Add other requirements sections here */}
 
                 </>
               )}
@@ -166,6 +174,7 @@ function CheckAccountStatus() {
         </div>
       )}
     </div>
+    </>
   );
 }
 
