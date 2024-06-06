@@ -9,8 +9,7 @@ import CalendarPage from "./pages/admin/CalendarPage";
 import UpdateEventPage from "./pages/admin/UpdateEventPage";
 import EventListPage from "./pages/admin/EventListPage";
 import EventDetailPage from "./pages/admin/EventDetailPage";
-import RegisterPage from "./pages/general/RegisterPage";
-import LoginPage from "./pages/general/LoginPage";
+
 import ConnectStripe from "./pages/general/stripe/ConnectStripe";
 import CheckAccountStatus from "./pages/general/stripe/CheckAccountStatus";
 import AddExternalAccount from "./pages/general/stripe/AddExternalAccount";
@@ -24,6 +23,14 @@ import UserHomePage from "./pages/user/UserHomePage";
 import UserViewEventsPage from "./pages/user/UserViewEventsPage";
 import CheckoutPage from "./pages/CheckoutPage";
 import UserPaymentSuccessPage from "./pages/user/UserPaymentSuccessPage";
+
+//----------------------------------------------------------------
+//    Authentication 
+import RegisterPage from "./pages/general/authentication/RegisterPage";
+import LoginPage from "./pages/general/authentication/LoginPage";
+import ResetPassword from "./components/general/authentication/ResetPassword";
+import VerifyCode from "./components/general/authentication/VerifyCode";
+import NewPassword from "./components/general/authentication/NewPassword";
 import { useAuth } from "./context/AuthContext"; // replace with the actual path
 
 
@@ -57,6 +64,9 @@ function App() {
 
         <Route path="register" element={<RegisterPage />} />
         <Route path="login" element={<LoginPage />} />
+        <Route path="/auth/reset-password" element={<ResetPassword />} />
+        <Route path="/auth/verify-code" element={<VerifyCode />} />
+        <Route path="/auth/new-password" element={<NewPassword />} />
 
         
 

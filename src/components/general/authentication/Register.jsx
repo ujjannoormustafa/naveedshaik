@@ -11,8 +11,8 @@ import {
   mdiEyeOffOutline,
   mdiPhone,
 } from "@mdi/js";
-import { BASE_URL } from "../../services/api";
-import Logo from "../../resources/images/logo.png";
+import { BASE_URL } from "../../../services/api";
+import Logo from "../../../resources/images/logo.png";
 
 const Register = () => {
   const navigate = useNavigate();
