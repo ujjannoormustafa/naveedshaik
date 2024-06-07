@@ -1,9 +1,9 @@
 import React from 'react';
-
+import ViewEvents from '../../components/user/ViewEvents';
 function UserHomePage() {
   return (
     <div>
-      User Home Page...
+    <ViewEvents/>
     </div>
   );
 }
