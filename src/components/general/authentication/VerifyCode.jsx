@@ -65,7 +65,7 @@ function VerifyCode() {
                 newOtpValues.push('');
             }
         }
-        setOtpValues(newOtpValues.join(''));
+        setOtpValues(newOtpValues);
         // console.log(newOtpValues.join(''));
         setVerificationError('');
     };
@@ -81,7 +81,7 @@ function VerifyCode() {
             } else {
                 console.log("Failed to verify OTP");
                 setVerificationError("Invalid OTP.");
-                toast.error(verificationError, {
+                toast.error("Invalid OTP", {
                     position: "top-right",
                     autoClose: 5000,
                     hideProgressBar: false,
@@ -94,8 +94,8 @@ function VerifyCode() {
             }
         } catch (error) {
             console.error("Error:", error);
-            setVerificationError("An error occurred while verifying the OTP.");
-            toast.error(verificationError, {
+            setVerificationError(error.response.data);
+            toast.error(error.response.data, {
                 position: "top-right",
                 autoClose: 5000,
                 hideProgressBar: false,
