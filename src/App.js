@@ -31,6 +31,9 @@ import LoginPage from "./pages/general/authentication/LoginPage";
 import ResetPassword from "./components/general/authentication/ResetPassword";
 import VerifyCode from "./components/general/authentication/VerifyCode";
 import NewPassword from "./components/general/authentication/NewPassword";
+import ActivationPage from "./components/general/authentication/ActivationPage";
+import PreActivation from "./components/general/authentication/PreActivationPage";
+
 import { useAuth } from "./context/AuthContext"; // replace with the actual path
 
 
@@ -67,6 +70,9 @@ function App() {
         <Route path="/auth/reset-password" element={<ResetPassword />} />
         <Route path="/auth/verify-code" element={<VerifyCode />} />
         <Route path="/auth/new-password" element={<NewPassword />} />
+        <Route path="/activation/:activation_token" element={<ActivationPage />} />
+        <Route path="/auth/pre-activation" element={<PreActivation />} />
+
 
         
 

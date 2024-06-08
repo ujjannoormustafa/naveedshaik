@@ -67,7 +67,7 @@ const Register = () => {
           progress: undefined,
           theme: "light",
         });
-        navigate("/login", { replace: true });
+        navigate("/auth/pre-activation", { replace: true,state: { emailAddress: email }  });
       } else {
         // Handle registration failure logic here
         response.json().then((data) => {

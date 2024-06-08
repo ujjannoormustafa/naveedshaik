@@ -19,13 +19,13 @@ export default function ResetPassword() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center py-12">
+    <div className="flex min-h-screen items-center justify-center py-12 px-4 md:px-0"> {/* Added responsive padding */}
       <div className="container max-w-md mx-auto">
         <div className="flex flex-col items-center">
           {!sent ? (
             <>
-              <h1 className="text-3xl font-semibold mb-4">Forgot your password?</h1>
-              <p className="text-gray-600 mb-5">
+              <h1 className="text-3xl font-semibold mb-4 text-center">Forgot your password?</h1>
+              <p className="text-gray-600 mb-5 text-center">
                 Please enter the email address associated with your account and we will email you a link to reset your
                 password.
               </p>
@@ -33,7 +33,7 @@ export default function ResetPassword() {
 
               <div className="text-center mt-4">
                 <RouterLink to='/login' className="block w-full">
-                  <button className="w-full bg-blue-500 text-white py-2 px-4 rounded mt-2">
+                  <button className="w-full bg-black text-white py-2 px-4 rounded mt-2">
                     Back
                   </button>
                 </RouterLink>
@@ -49,7 +49,7 @@ export default function ResetPassword() {
                   Please check your email.
                 </p>
                 <RouterLink to='/login' className="block w-full mt-5">
-                  <button className="w-full bg-blue-500 text-white py-2 px-4 rounded">
+                  <button className="w-full bg-black text-white py-2 px-4 rounded">
                     Back
                   </button>
                 </RouterLink>

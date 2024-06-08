@@ -177,7 +177,7 @@ const Login = () => {
                   </div>
                 </div>
                 <div className="text-right mt-2">
-                  <Link to="/auth/reset-password" className="text-sm text-blue-500 underline">
+                  <Link to="/auth/reset-password" className="text-sm text-white underline">
                     Forgot Password?
                   </Link>
                 </div>
