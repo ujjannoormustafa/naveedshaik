@@ -56,7 +56,7 @@ const EventDetail = () => {
       <div className="max-w-2xl mx-auto bg-white rounded-lg overflow-hidden shadow-md">
         <img
           className="w-full h-64 object-cover object-center"
-          src={images[0]}
+          src={images?.length > 0 && images[0]}
           alt={title}
         />
         <div className="p-6">

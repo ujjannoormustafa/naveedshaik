@@ -19,29 +19,30 @@ const ChangeProfile = () => {
   const [uploadStatus, setUploadStatus] = useState("");
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        if (!token) {
-          console.error("User token not available");
-          return;
-        }
+    // const fetchData = async () => {
+    //   try {
+    //     if (!token) {
+    //       console.error("User token not available");
+    //       return;
+    //     }
 
-        const response = await axios.get(
-          `${BASE_URL}/api/user/${userData._id}`,
-          {
-            headers: {
-              Authorization: token,
-            },
-          }
-        );
+    //     const response = await axios.get(
+    //       `${BASE_URL}/api/user/${userData._id}`,
+    //       {
+    //         headers: {
+    //           Authorization: token,
+    //         },
+    //       }
+    //     );
+    //     console.log(response);
+    //     setUserData(response.data);
+    //   } catch (error) {
+    //     console.error("Error fetching user data:", error.message);
+    //   }
+    // };
 
-        setUserData(response.data);
-      } catch (error) {
-        console.error("Error fetching user data:", error.message);
-      }
-    };
-
-    fetchData();
+    // fetchData();
+    setUserData(userData);
   }, []);
 
   const handleFileChange = (event) => {
@@ -76,6 +77,8 @@ const ChangeProfile = () => {
           ...NewuserData,
           profileImage: response.data.user.profileImage,
         });
+      }else{
+        console.log(response)
       }
     } catch (error) {
       console.error("Error updating profile image:", error.message);

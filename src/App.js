@@ -8,6 +8,7 @@ import AddEventPage from "./pages/admin/AddEventPage";
 import CalendarPage from "./pages/admin/CalendarPage";
 import UpdateEventPage from "./pages/admin/UpdateEventPage";
 import EventListPage from "./pages/admin/EventListPage";
+import BookedEvents from "./components/user/BookedEvents";
 import EventDetailPage from "./pages/admin/EventDetailPage";
 
 import ConnectStripe from "./pages/general/stripe/ConnectStripe";
@@ -40,7 +41,7 @@ import { useAuth } from "./context/AuthContext"; // replace with the actual path
 
 const ProtectedRoute = ({ element, role }) => {
   const { isLoggedIn, userData,token } = useAuth();
-  if (!isLoggedIn) {
+  if (!userData) {
     return <Navigate to="/login" />;
   }
 
@@ -171,6 +172,11 @@ function App() {
             path="view-events"
             element={<ProtectedRoute element={<UserViewEventsPage />} role="user" />}
           />
+           <Route
+            path="booked-events"
+            element={<ProtectedRoute element={<BookedEvents />} role="user" />}
+          />
+         
            <Route
             path=":eventId"
             element={

@@ -4,10 +4,12 @@ import {
   Menu,
   MenuItem,
   SubMenu,
+  
   SidebarHeader,
 } from "react-pro-sidebar";
 // import "react-pro-sidebar/dist/css/sidebar.css";
 import "react-pro-sidebar/dist/css/styles.css";
+import { MdEvent } from "react-icons/md";
 
 import {
   mdiHome,
@@ -17,6 +19,10 @@ import {
   mdiMenu,
   mdiCalendarStar,
   mdiCalendarBlankOutline,
+
+  mdiCalendarPlus,
+  mdiCalendarCheck,
+  mdiCalendarClock
 } from "@mdi/js";
 import Icon from "@mdi/react";
 import Logo from "../../resources/images/logo.png";
@@ -98,7 +104,7 @@ const UserSidebar = () => {
           color: "white",
         }}
       >
-        <MenuItem icon={<Icon path={mdiHome} size={1} />}>
+        {/* <MenuItem icon={<Icon path={mdiHome} size={1} />}>
           {" "}
           <Link
             to="/admin"
@@ -108,11 +114,11 @@ const UserSidebar = () => {
           >
             Dashboard
           </Link>
-        </MenuItem>
-        <SubMenu title="User" icon={<Icon path={mdiAccount} size={1} />}>
+        </MenuItem> */}
+        {/* <SubMenu title="User" icon={<Icon path={mdiAccount} size={1} />}>
           <MenuItem>
             <Link
-              to="/admin/change-profile"
+              to="/user/change-profile"
               style={{
                 color: "white",
               }}
@@ -121,22 +127,29 @@ const UserSidebar = () => {
             </Link>
           </MenuItem>
           <MenuItem>Settings</MenuItem>
-        </SubMenu>
+        </SubMenu> */}
 
-        <SubMenu title="Events" icon={<Icon path={mdiCalendarStar} size={1} />}>
-          <MenuItem>
+        {/* <SubMenu title="Events" icon={<Icon path={mdiCalendarStar} size={1} />}> */}
+          <MenuItem  
+          icon={<Icon path={mdiCalendarPlus} size={1} />}
+          >
+         
             <Link
               to="/user/view-events"
               style={{
                 color: "white",
               }}
             >
+                      
+
               View Events
             </Link>
           </MenuItem>
-          <MenuItem>
+          <MenuItem
+            icon={<Icon path={mdiCalendarCheck} size={1} />}
+          >
             <Link
-              to="/admin/event-list"
+              to="/user/booked-events"
               style={{
                 color: "white",
               }}
@@ -144,7 +157,9 @@ const UserSidebar = () => {
               Booked Events
             </Link>
           </MenuItem>
-          <MenuItem>
+          <MenuItem
+            icon={<Icon path={mdiCalendarClock} size={1} />}
+          >
             <Link
               to="/user/view-events"
               style={{
@@ -155,8 +170,8 @@ const UserSidebar = () => {
             </Link>
           </MenuItem>
           {/* Add more menu items as needed */}
-        </SubMenu>
-        <MenuItem icon={<Icon path={mdiCalendarBlankOutline} size={1} />}>
+        {/* </SubMenu> */}
+        {/* <MenuItem icon={<Icon path={mdiCalendarBlankOutline} size={1} />}>
           <Link
             to="/admin/calendar"
             style={{
@@ -165,7 +180,7 @@ const UserSidebar = () => {
           >
             Calendar
           </Link>
-        </MenuItem>
+        </MenuItem> */}
         {/* <SubMenu title="Payments" icon={<Icon path={mdiCalendarStar} size={1} />}>
           <MenuItem>
             <Link
