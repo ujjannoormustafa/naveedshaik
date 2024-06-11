@@ -79,14 +79,20 @@ const UserTopbar = ({ onToggleSidebar }) => {
 
           <div className="relative">
             <div className="cursor-pointer" onClick={toggleDropdown}>
-              {userData.profileImage ? (
+              {userData?.profileImage ? (
                 <img
                   className="w-10 h-10 rounded-full"
-                  src={userData.profileImage}
+                  src={userData?.profileImage}
                   alt="Rounded avatar"
                 />
               ) : (
-                <Icon path={mdiAccountCircle} size={1.5} color="white" />
+               <div className="w-10 h-10 rounded-full flex items-center justify-center bg-white text-black">
+          {userData.full_name ? (
+            <span className="text-xl">{userData.full_name.charAt(0)}</span>
+          ) : (
+            <Icon path={mdiAccountCircle} size={1.5} color="white" />
+          )}
+        </div>
               )}
             </div>
           </div>

@@ -1,5 +1,6 @@
 import React from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { useEffect } from "react";
+import { Routes, Route, Navigate,useNavigate } from "react-router-dom";
 import AdminLayout from "./Layouts/AdminLayout";
 import UserLayout from "./Layouts/UserLayout";
 import ChangeProfile from "./components/general/ChangeProfile";
@@ -40,27 +41,39 @@ import { useAuth } from "./context/AuthContext"; // replace with the actual path
 
 
 const ProtectedRoute = ({ element, role }) => {
-  const { isLoggedIn, userData,token } = useAuth();
-  if (!userData) {
-    return <Navigate to="/login" />;
-  }
+  console.log("protected route");
+  const navigate = useNavigate();
+  const { isLoggedIn, userData, token,loading } = useAuth();
 
-  if (role && userData?.role !== role) {
-    // Redirect to the default route based on the user's role
-    return userData?.role === "admin" ? (
-      <Navigate to="/admin" />
-    ) : (
-      <Navigate to="/user" />
-    );
-  }
+  useEffect(() => {console.log("useEffect");
+    if(!loading){
+      console.log("Protected Route - isLoggedIn:", isLoggedIn);
+      console.log("Protected Route - userData:", userData);
+      console.log("Protected Route - token:", token);
   
+      if (!isLoggedIn) {
+        console.log("if");
+        navigate("/login", { replace: true });
+      } else {
+        // Redirect to the default route based on the user's role
+        console.log("else");
+        navigate(userData?.role === "admin" ? "/admin" : "/user", { replace: true });
+      }
+    }
+   
+  }, [isLoggedIn, userData, role, navigate,token,loading]);
 
-  return <>{element}</>;
+  if (!isLoggedIn || (role && userData?.role !== role)) {
+    return null;
+  }
+
+  return element;
 };
 
 function App() {
   const { isLoggedIn, userData } = useAuth();
   console.log(userData);
+  console.log("in main userData: " ,userData);
   return (
     <div>
       <Routes>
