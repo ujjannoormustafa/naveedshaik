@@ -1,13 +1,16 @@
 // ChangeProfile.jsx
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { mdiCamera, mdiCheck, mdiAccount, mdiPhone, mdiEmail } from "@mdi/js";
 import Icon from "@mdi/react";
 import { useAuth } from "../../context/AuthContext";
 import { BASE_URL } from "../../services/api";
-
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const ChangeProfile = () => {
-  const { token, userData } = useAuth();
+  const { token, userData,logout } = useAuth();
+  const navigate = useNavigate();
   const [NewuserData, setUserData] = useState({
     full_name: "",
     profileImage: "",
@@ -55,12 +58,13 @@ const ChangeProfile = () => {
     try {
       const formData = new FormData();
       formData.append("image", newProfileImage);
-
+  
       if (!token) {
         console.error("User token not available");
+        setUploadStatus("Failed to update profile image: User token not available");
         return;
       }
-
+  
       const response = await axios.post(
         `${BASE_URL}/api/user/change-profile`,
         formData,
@@ -70,24 +74,65 @@ const ChangeProfile = () => {
           },
         }
       );
-
+  
       if (response.status === 200) {
         setUploadStatus("Profile image updated successfully");
-        setUserData({
-          ...NewuserData,
+        setUserData((prevUserData) => ({
+          ...prevUserData,
           profileImage: response.data.user.profileImage,
+        }));
+        toast.success("Profile image updated successfully", {
+          position: "top-right",
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
         });
-      }else{
-        console.log(response)
+      } else {
+        console.error("Failed to update profile image:", response);
+        
+        setUploadStatus("Failed to update profile image");
+        toast.error("Failed to update profile image", {
+          position: "top-right",
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
       }
     } catch (error) {
-      console.error("Error updating profile image:", error.message);
-      setUploadStatus("Failed to update profile image");
+      console.error("Error updating profile image:", error);
+      if (error.response && error.response.status === 401) {
+        setUploadStatus("Token expired. Please log in again.");
+        // Handle token expiration, e.g., by logging out the user
+        logout();
+        navigate("/login", { replace: true,state: { message: "Session expired. Please log in again." }  });
+      } else {
+        setUploadStatus("Failed to update profile image");
+        toast.error("Failed to update profile image", {
+          position: "top-right",
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+        
+      }
     }
   };
 
   return (
     <div className="max-w-screen-xl h-full mx-auto p-6 bg-white rounded-md  flex flex-col  lg:flex-row justify-center items-center">
+      <ToastContainer/>
       <div className="relative mb-6">
         <div className="rounded-md overflow-hidden w-96 h-96 mx-auto">
           <img

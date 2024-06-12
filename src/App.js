@@ -1,6 +1,6 @@
 import React from "react";
-import { useEffect } from "react";
-import { Routes, Route, Navigate,useNavigate } from "react-router-dom";
+import { useEffect,useState } from "react";
+import { Routes, Route, Navigate,useNavigate,useLocation } from "react-router-dom";
 import AdminLayout from "./Layouts/AdminLayout";
 import UserLayout from "./Layouts/UserLayout";
 import ChangeProfile from "./components/general/ChangeProfile";
@@ -41,29 +41,40 @@ import { useAuth } from "./context/AuthContext"; // replace with the actual path
 
 
 const ProtectedRoute = ({ element, role }) => {
-  console.log("protected route");
   const navigate = useNavigate();
-  const { isLoggedIn, userData, token,loading } = useAuth();
+  const { isLoggedIn, userData, loading } = useAuth();
+  const [initialCheck, setInitialCheck] = useState(false);
+  const location = useLocation();
 
-  useEffect(() => {console.log("useEffect");
-    if(!loading){
-      console.log("Protected Route - isLoggedIn:", isLoggedIn);
-      console.log("Protected Route - userData:", userData);
-      console.log("Protected Route - token:", token);
-  
+  useEffect(() => {
+    console.log("Effective location");
+    localStorage.setItem("redirectPath", location.pathname); // Store the current path in localStorage
+    if (!loading && !initialCheck) {
       if (!isLoggedIn) {
-        console.log("if");
-        navigate("/login", { replace: true });
-      } else {
-        // Redirect to the default route based on the user's role
-        console.log("else");
-        navigate(userData?.role === "admin" ? "/admin" : "/user", { replace: true });
-      }
-    }
-   
-  }, [isLoggedIn, userData, role, navigate,token,loading]);
+        
 
-  if (!isLoggedIn || (role && userData?.role !== role)) {
+        navigate("/login", { replace: true });
+      } else  {
+        //use location path if available
+        const redirectPath = localStorage.getItem("redirectPath");
+        console.log(redirectPath);
+        if (location.state && location.state.redirectPath || redirectPath) {
+          console.log("location path");
+          console.log(redirectPath);
+          navigate(redirectPath, { replace: true });
+        } else {
+          navigate(userData?.role === "admin"? "/admin" : "/user", { replace: true });
+        }
+        // navigate(userData?.role === "admin" ? "/admin" : "/user", { replace: true });
+      }
+      setInitialCheck(true);
+    }
+    if(!isLoggedIn) {
+      navigate("/login", { replace: true});
+    }
+  }, [isLoggedIn, userData, role, navigate, loading, initialCheck]);
+
+  if (loading || !isLoggedIn || (role && userData?.role !== role)) {
     return null;
   }
 

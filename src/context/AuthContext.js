@@ -1,5 +1,4 @@
 import React, { createContext, useState, useEffect, useContext } from "react";
-
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
@@ -42,6 +41,7 @@ export const AuthProvider = ({ children }) => {
     setUserData(null);
     localStorage.removeItem("token");
     localStorage.removeItem("userData");
+    
   };
 
   useEffect(() => {

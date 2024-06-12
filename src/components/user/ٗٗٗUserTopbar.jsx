@@ -49,9 +49,9 @@ const UserTopbar = ({ onToggleSidebar }) => {
 
   const handleLogout = () => {
     console.log("Logout clicked");
-    setDropdownVisible(false);
+    // setDropdownVisible(false);
     logout();
-    navigate('/login');
+    navigate('/user',{replace: true});
   };
 
   return (

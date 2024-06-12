@@ -4,9 +4,9 @@ import React, { useEffect, useState } from "react";
 import { useParams } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { BASE_URL } from '../../services/api';
-import { Link } from 'react-router-dom';
+import { Link,useNavigate } from 'react-router-dom';
 import CheckoutForm from './CheckoutForm';
-
+import axios from 'axios';
 const stripePromise = loadStripe('pk_live_51Oda4PHSvDuMR6pwVmcCmszQnbOosphNs3Xpzl0h57BH2idPzuBRXiNgfXpuTXPHF5QPqMPHxMULCChp7fzG11R600irHtNpUs');
 // const stripePromise = loadStripe('pk_test_51Oda4PHSvDuMR6pwhSgqNrMgZNSlmr4LUGSGwPSuUpG7ns3YltEjeTW7oOIGOkKk8EmY7yt8MnxRXzhRin0sxqcR0045cbxygI')
 function Checkout() {
@@ -14,31 +14,39 @@ function Checkout() {
   const [isLoading, setIsLoading] = useState(true);
   const [message, setMessage] = useState(null);
   const { eventId } = useParams();
-  const { token } = useAuth();
+  const { token,logout } = useAuth();
+  const navigate = useNavigate();
 
     useEffect(() => {
     const fetchClientSecret = async () => {
       try {
-        const response = await fetch(`${BASE_URL}/api/stripe/checkout/${eventId}`, {
-          method: "POST",
+        const response = await axios.post(`${BASE_URL}/api/stripe/checkout/${eventId}`, {}, {
           headers: {
-             "Content-Type": "application/json",
+            "Content-Type": "application/json",
             Authorization: token,
-            },
-
+          },
         });
-
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
+    
+        if (response.status === 200) {
+          const data = response.data;
+          setClientSecret(data.clientSecret);
+          setIsLoading(false); // Set loading to false after setting clientSecret
+        } else {
+          console.error("Failed to fetch client secret", response);
         }
-
-        const data = await response.json();
-        // Ensure clientSecret is in the correct format
-        
-        setClientSecret(data.clientSecret);
-        setIsLoading(false); // Set loading to false after setting clientSecret
       } catch (error) {
-        console.error("Error:", error);
+        console.error("Error fetching client secret:", error);
+        if (error.response) {
+          if (error.response.status === 401) {
+            console.log("Token expired");
+            logout();
+            navigate("/login", { replace: true,state: { message: "Session expired. Please log in again." }  });
+          } else {
+            console.error("API request failed with status:", error.response.status);
+          }
+        } else {
+          console.error("Error response:", error.response);
+        }
       }
     };
 

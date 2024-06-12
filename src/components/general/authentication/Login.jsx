@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Icon from "@mdi/react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link,useLocation } from "react-router-dom";
 import { mdiAccount, mdiLock, mdiEyeOutline, mdiEyeOffOutline } from "@mdi/js";
 import { BASE_URL } from "../../../services/api";
 import { useAuth } from "../../../context/AuthContext";
@@ -10,7 +10,22 @@ import Logo from "../../../resources/images/logo.png";
 
 const Login = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const message = location?.state?.message;
+  console.log("message: ",message);
+  // if(location?.state?.message){
+  //   toast.error(message, {
+  //     position: "top-right",
+  //     autoClose: 1000,
+  //     hideProgressBar: false,
+  //     closeOnClick: true,
+  //     pauseOnHover: true,
+  //     draggable: true,
+  //     progress: undefined,
+  //   });
+  // }
   const { login } = useAuth();
+
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -117,6 +132,11 @@ const Login = () => {
             <div className="text-center mb-10">
               <h1 className="font-bold text-3xl text-white">LOGIN</h1>
               <p className="text-white">Enter your information to Login</p>
+              {location?.state?.message && (
+                <div className="mt-2 text-red-500">
+                  {location?.state?.message}
+                </div>
+              )}
             </div>
             <div>
               <div className="flex flex-col mb-5">

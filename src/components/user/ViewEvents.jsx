@@ -8,31 +8,45 @@ import {
   mdiMagnify,
 } from "@mdi/js";
 import { useAuth } from "../../context/AuthContext";
-import { Link } from "react-router-dom";
+import { Link,useNavigate } from "react-router-dom";
 import { BASE_URL } from "../../services/api";
+import axios from "axios";
 const ViewEvents = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [events, setEvents] = useState([]); // State to store events
-  const { token, userData } = useAuth();
-
+  const { token, userData,logout } = useAuth();
+  const navigate = useNavigate()
   useEffect(() => {
+
+    
     // Fetch events from the API
     const fetchEvents = async () => {
+     
       try {
-        const response = await fetch(`${BASE_URL}/api/event/get-all-events`, {
-          method: "GET",
+        const response = await axios.get(`${BASE_URL}/api/event/get-all-events`, {
           headers: {
             Authorization: token,
           },
-        }); // Replace with your API endpoint
-        if (response.ok) {
-          const data = await response.json();
-          setEvents(data);
+        });
+    
+        if (response.status === 200) {
+          setEvents(response.data);
         } else {
-          console.error("Failed to fetch events");
+          console.error("Failed to fetch events", response);
         }
       } catch (error) {
         console.error("Error fetching events:", error);
+        if (error.response) {
+          if (error.response.status === 401) {
+            console.log("Token expired");
+            logout();
+            navigate("/login", { replace: true,state: { message: "Session expired. Please log in again." }  });
+          } else {
+            console.error("API request failed with status:", error.response.status);
+          }
+        } else {
+          console.error("Error response:", error.response);
+        }
       }
     };
 

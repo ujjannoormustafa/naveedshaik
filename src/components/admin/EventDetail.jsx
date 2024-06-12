@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link,useNavigate } from "react-router-dom";
 import Icon from "@mdi/react";
 import { mdiCalendar, mdiClockOutline, mdiMapMarker, mdiTicket } from "@mdi/js";
 import { useAuth } from "../../context/AuthContext";
 import { BASE_URL } from "../../services/api";
 const EventDetail = () => {
   const { eventId } = useParams();
+  const navigate = useNavigate()
   const [event, setEvent] = useState(null);
-  const { token, userData } = useAuth();
+  const { token, userData,logout } = useAuth();
 
   useEffect(() => {
     const fetchEventDetails = async () => {
@@ -17,10 +18,18 @@ const EventDetail = () => {
             Authorization: token,
           },
         });
+    
         if (response.ok) {
           const data = await response.json();
           console.log(data);
           setEvent(data);
+        } else if (response.status === 401) {
+          // If unauthorized, redirect to login with a message
+          logout()
+          navigate("/login", {
+            state: { message: "Your session has expired. Please log in again." },
+            replace: true,
+          });
         } else {
           console.error("Failed to fetch event details");
         }
