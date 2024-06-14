@@ -82,6 +82,9 @@ const UserSidebar = () => {
       toggled={isSidebarCollapsed}
       breakPoint="md"
       ref={componentRef}
+      style={{
+        zIndex: "9"
+      }}
     >
       <SidebarHeader
         style={{

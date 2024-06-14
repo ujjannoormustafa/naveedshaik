@@ -1,15 +1,18 @@
-// ChangeProfile.jsx
-import React, { useState, useEffect } from "react";
-import { useNavigate,useLocation } from "react-router-dom";
+import React, { useState, useEffect, useCallback } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
-import { mdiCamera, mdiCheck, mdiAccount, mdiPhone, mdiEmail } from "@mdi/js";
+import { mdiCamera, mdiAccount, mdiPhone, mdiEmail } from "@mdi/js";
 import Icon from "@mdi/react";
 import { useAuth } from "../../context/AuthContext";
 import { BASE_URL } from "../../services/api";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Cropper from "react-easy-crop";
+import Modal from "react-modal";
+import getCroppedImg from "./cropImage"; // Implement this function
+import "./profile.css"
 const ChangeProfile = () => {
-  const { token, userData,logout } = useAuth();
+  const { token, userData, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [NewuserData, setUserData] = useState({
@@ -21,51 +24,45 @@ const ChangeProfile = () => {
 
   const [newProfileImage, setNewProfileImage] = useState(null);
   const [uploadStatus, setUploadStatus] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [crop, setCrop] = useState({ x: 0, y: 0 });
+  const [zoom, setZoom] = useState(1);
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
 
   useEffect(() => {
-    // const fetchData = async () => {
-    //   try {
-    //     if (!token) {
-    //       console.error("User token not available");
-    //       return;
-    //     }
-
-    //     const response = await axios.get(
-    //       `${BASE_URL}/api/user/${userData._id}`,
-    //       {
-    //         headers: {
-    //           Authorization: token,
-    //         },
-    //       }
-    //     );
-    //     console.log(response);
-    //     setUserData(response.data);
-    //   } catch (error) {
-    //     console.error("Error fetching user data:", error.message);
-    //   }
-    // };
-
-    // fetchData();
     setUserData(userData);
-  }, []);
+  }, [userData]);
 
   const handleFileChange = (event) => {
-    setNewProfileImage(event.target.files[0]);
-    console.log("New Profile Image: " + JSON.stringify(event.target.files[0]))
-    handleUpload();
+    setNewProfileImage(URL.createObjectURL(event.target.files[0]));
+    setIsModalOpen(true);
   };
 
-  const handleUpload = async () => {
+  const onCropComplete = useCallback((croppedArea, croppedAreaPixels) => {
+    setCroppedAreaPixels(croppedAreaPixels);
+  }, []);
+
+  const handleCrop = async () => {
+    try {
+      const croppedImage = await getCroppedImg(newProfileImage, croppedAreaPixels);
+      handleUpload(croppedImage);
+      setIsModalOpen(false);
+    } catch (error) {
+      console.error("Error cropping image:", error);
+    }
+  };
+
+  const handleUpload = async (croppedImage) => {
     try {
       const formData = new FormData();
-      formData.append("image", newProfileImage);
-  
+      formData.append("image", croppedImage);
+
       if (!token) {
         console.error("User token not available");
         setUploadStatus("Failed to update profile image: User token not available");
         return;
       }
-  
+
       const response = await axios.post(
         `${BASE_URL}/api/user/change-profile`,
         formData,
@@ -75,7 +72,7 @@ const ChangeProfile = () => {
           },
         }
       );
-  
+
       if (response.status === 200) {
         setUploadStatus("Profile image updated successfully");
         setUserData((prevUserData) => ({
@@ -94,7 +91,6 @@ const ChangeProfile = () => {
         });
       } else {
         console.error("Failed to update profile image:", response);
-        
         setUploadStatus("Failed to update profile image");
         toast.error("Failed to update profile image", {
           position: "top-right",
@@ -111,9 +107,8 @@ const ChangeProfile = () => {
       console.error("Error updating profile image:", error);
       if (error.response && error.response.status === 401) {
         setUploadStatus("Token expired. Please log in again.");
-        // Handle token expiration, e.g., by logging out the user
         logout();
-        navigate("/login", { replace: true,state: { message: "Session expired. Please log in again.",from: location.pathname }  });
+        navigate("/login", { replace: true, state: { message: "Session expired. Please log in again.", from: location.pathname } });
       } else {
         setUploadStatus("Failed to update profile image");
         toast.error("Failed to update profile image", {
@@ -126,14 +121,18 @@ const ChangeProfile = () => {
           progress: undefined,
           theme: "light",
         });
-        
       }
     }
   };
 
+  const handleWheel = (event) => {
+    event.preventDefault();
+    setZoom((zoom) => Math.min(3, Math.max(1, zoom - event.deltaY / 100)));
+  };
+
   return (
-    <div className="max-w-screen-xl h-full mx-auto p-6 bg-white rounded-md  flex flex-col  lg:flex-row justify-center items-center">
-      <ToastContainer/>
+    <div className="max-w-screen-xl h-full mx-auto p-6 bg-white rounded-md flex flex-col lg:flex-row justify-center items-center">
+      <ToastContainer />
       <div className="relative mb-6">
         <div className="rounded-md overflow-hidden w-96 h-96 mx-auto">
           <img
@@ -198,14 +197,51 @@ const ChangeProfile = () => {
             {NewuserData.email}
           </div>
         </div>
-
-        {/* {uploadStatus && (
-          <p className="mt-4 flex items-center text-green-600">
-            <Icon path={mdiCheck} title="Success" size={1.5} className="mr-2" />
-            {uploadStatus}
-          </p>
-        )} */}
       </div>
+
+      <Modal
+        isOpen={isModalOpen}
+        onRequestClose={() => setIsModalOpen(false)}
+        contentLabel="Edit Profile Image"
+        className="fixed inset-0 flex items-center justify-center p-4 z-10"
+        overlayClassName="fixed inset-0 bg-black bg-opacity-90 z-9"
+      >
+        <div className="bg-white rounded-lg shadow-lg p-6 max-w-lg w-full mx-auto relative">
+          <h2 className="text-xl font-semibold mb-4">Edit Profile Image</h2>
+          {newProfileImage && (
+            <div className="w-full h-64 relative mb-4">
+              <Cropper
+                image={newProfileImage}
+                crop={crop}
+                zoom={zoom}
+                aspect={1}
+                cropShape="round"
+                objectFit="contain"
+                onCropChange={setCrop}
+                onZoomChange={setZoom}
+                onCropComplete={onCropComplete}
+                classes={{
+                  containerClassName: "cropper-container",
+                  mediaClassName: "cropper-media",
+                  cropAreaClassName: "cropper-area"
+                }}
+              />
+            </div>
+          )}
+          <button
+            className="bg-black text-white py-2 px-4 rounded"
+            onClick={handleCrop}
+          >
+            Crop and Upload
+          </button>
+          <button
+            className="bg-black text-white py-2 px-4 rounded ml-2"
+            onClick={() => setIsModalOpen(false)}
+          >
+            Cancel
+          </button>
+        </div>
+      </Modal>
     </div>
   );
 };
