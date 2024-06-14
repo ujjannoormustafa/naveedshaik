@@ -7,37 +7,93 @@ import {
   mdiCurrencyUsd,
   mdiMagnify,
 } from "@mdi/js";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { useAuth } from "../../context/AuthContext";
 import { Link } from "react-router-dom";
 import { BASE_URL } from "../../services/api";
+import { useLocation,useNavigate } from "react-router-dom";
+import axios from "axios";
 const EventList = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [events, setEvents] = useState([]); // State to store events
-  const { token, userData } = useAuth();
+  const { token, userData,logout } = useAuth();
+  const location = useLocation();
+  const navigate = useNavigate()
 
   useEffect(() => {
     // Fetch events from the API
     const fetchEvents = async () => {
       try {
-        const response = await fetch(`${BASE_URL}/api/event/event-list`, {
-          method: "GET",
+        const response = await axios.get(`${BASE_URL}/api/event/event-list`, {
           headers: {
             Authorization: token,
           },
-        }); // Replace with your API endpoint
-        if (response.ok) {
-          const data = await response.json();
+        });
+
+        if (response.status === 200) {
+          const data = response.data; // Use response.data directly with Axios
           setEvents(data);
         } else {
-          console.error("Failed to fetch events");
+          // Handle errors if the request was not successful
+          console.error("Failed to fetch events:", response);
+          if (response.status === 401) {
+            // Token expired, handle logout and redirection
+            console.log("Token expired");
+            logout();
+            navigate("/login", {
+              replace: true,
+              state: {
+                message: "Session expired. Please log in again.",
+                from: location.pathname,
+              },
+            });
+          } else {
+            // Notify user of specific error message
+            toast.error(response?.data?.message || "Failed to fetch events", {
+              position: "top-right",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+            });
+          }
         }
       } catch (error) {
+        // Handle network errors or other exceptions
         console.error("Error fetching events:", error);
+        if (error.response && error.response.status === 401) {
+          // Token expired, handle logout and redirection
+          console.log("Token expired");
+          logout();
+          navigate("/login", {
+            replace: true,
+            state: {
+              message: "Session expired. Please log in again.",
+              from: location.pathname,
+            },
+          });
+        } else {
+          // Notify user of specific error message
+          toast.error(error.message || "Error fetching events", {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
+        }
       }
     };
 
     fetchEvents();
-  }, []);
+  }, [ token, logout, navigate]); // Ensure all dependencies are included in the dependency array
 
   const filteredEvents = events.filter((event) =>
     event.title.toLowerCase().includes(searchTerm.toLowerCase())
@@ -45,6 +101,7 @@ const EventList = () => {
 
   return (
     <div className="bg-white container mx-auto mt-8 p-4">
+      <ToastContainer/>
       <h1 className="text-3xl font-semibold mb-4">Events</h1>
       <div className="relative mb-8 w-full md:w-2/3 lg:w-1/2 mx-auto">
         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">

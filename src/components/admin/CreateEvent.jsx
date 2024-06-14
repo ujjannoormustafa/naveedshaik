@@ -10,8 +10,13 @@ import {
 } from "@mdi/js";
 import { useAuth } from "../../context/AuthContext";
 import { BASE_URL } from "../../services/api";
+import axios from "axios";
+import { useLocation,useNavigate } from "react-router-dom";
 const CreateEvent = () => {
-  const { token, userData } = useAuth();
+  const { token, userData,logout } = useAuth();
+  const location = useLocation()
+  const navigate = useNavigate()
+  const [tokenExpired,setTokenExpired] = useState(false)
   const [eventInfo, setEventInfo] = useState({
     title: "",
     details: "",
@@ -39,37 +44,12 @@ const CreateEvent = () => {
   };
   const handleCreateEvent = async () => {
     try {
-      console.log(eventInfo.images);
-      // Assuming you have the user token stored in localStorage or elsewhere
-
       // Check if the token is available
       if (!token) {
         console.error("User token not available");
         return;
       }
-
-      // // Prepare the request payload
-      // const payload = {
-      //   title: eventInfo.title,
-      //   description: eventInfo.details,
-      //   date: eventInfo.date,
-      //   time: eventInfo.time,
-      //   venue: eventInfo.venue,
-      //   totalSeats: eventInfo.totalSeats,
-      //   ticketPrice: eventInfo.ticketPrice,
-      //   // images: [], // Initialize an empty array
-
-      //   // Iterate over the array of File objects and push relevant data to images array
-      //   images: eventInfo.images.map((my_image) => ({
-      //     fieldname: my_image.fieldname,
-      //     originalname: my_image.originalname,
-      //     encoding: my_image.encoding,
-      //     mimetype: my_image.mimetype,
-      //     size: my_image.size,
-      //     // Add other relevant properties if needed
-      //   })),
-      // };
-
+  
       // Prepare the form data
       const formData = new FormData();
       formData.append("title", eventInfo.title);
@@ -79,35 +59,25 @@ const CreateEvent = () => {
       formData.append("venue", eventInfo.venue);
       formData.append("totalSeats", eventInfo.totalSeats);
       formData.append("ticketPrice", eventInfo.ticketPrice);
-
+  
       // Append each image file to the form data
       for (const imageFile of eventInfo.images) {
-        formData.append("images", imageFile); // Make sure this is the correct field name
+        formData.append("images", imageFile); // Ensure this matches the API endpoint's field name
       }
-
-      // console.log("images: " + payload.images);
-      // Make the API request
-      const response = await fetch(`${BASE_URL}/api/event/create-event`, {
-        method: "POST",
+  
+      // Make the API request using axios
+      const response = await axios.post(`${BASE_URL}/api/event/create-event`, formData, {
         headers: {
           Authorization: token,
+          'Content-Type': 'multipart/form-data', // Ensure correct content type for FormData
         },
-        body: formData,
       });
-
+  
       // Check if the request was successful (status code 2xx)
-      if (response.ok) {
-        const responseData = await response.json();
-        toast.success("Event Created successfully!", {
-          position: "top-right",
-          autoClose: 1000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
+      if (response.status === 200) {
+        const responseData = response.data;
+        // Handle success scenario
+        console.log("Event created successfully:", responseData.event);
         setEventInfo({
           title: "",
           details: "",
@@ -118,16 +88,34 @@ const CreateEvent = () => {
           totalSeats: "",
           ticketPrice: "",
         });
-        console.log("Event created successfully:", responseData.event);
+        // Notify user of success
+        toast.success("Event Created successfully!", {
+          position: "top-right",
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
       } else {
         // Handle errors if the request was not successful
-        const responseData = await response.json();
-        console.log(responseData);
-        toast.error(
-          responseData?.message
-            ? responseData.message
-            : responseData.statusText,
-          {
+        console.error("Failed to create event:", response);
+        if (response.status === 401) {
+          // Token expired, handle logout and redirection
+          console.log("Token expired");
+          logout();
+          navigate("/login", {
+            replace: true,
+            state: {
+              message: "Session expired. Please log in again.",
+              from: location.pathname,
+            },
+          });
+        } else {
+          // Notify user of specific error message
+          toast.error(response?.data?.message || "Failed to create event", {
             position: "top-right",
             autoClose: 5000,
             hideProgressBar: false,
@@ -136,22 +124,36 @@ const CreateEvent = () => {
             draggable: true,
             progress: undefined,
             theme: "light",
-          }
-        );
-        console.error("Failed to create event:", response.statusText);
+          });
+        }
       }
     } catch (error) {
-      toast.error(error.message, {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
-      console.error("Error creating event:", error.message);
+      // Handle general error scenarios
+      console.error("Error creating event:", error);
+      if (error.response && error.response.status === 401) {
+        // Token expired, handle logout and redirection
+        console.log("Token expired");
+        logout();
+        navigate("/login", {
+          replace: true,
+          state: {
+            message: "Session expired. Please log in again.",
+            from: location.pathname,
+          },
+        });
+      } else {
+        // Notify user of specific error message
+        toast.error(error.message || "Error creating event", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+      }
     }
   };
   const handleKeyPress = (event) => {

@@ -11,10 +11,15 @@ import {
 } from "@mdi/js";
 import { useAuth } from "../../context/AuthContext";
 import { BASE_URL } from "../../services/api";
+import { useNavigate,useLocation } from "react-router-dom";
+import axios from "axios";
 const UpdateEvent = () => {
   const { eventId } = useParams();
-  const { token, userData } = useAuth();
+  const { token, userData,logout } = useAuth();
   const [newPhotos, setNewPhotos] = useState([]);
+  const [tokenExpired,setTokenExpired] = useState(false)
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const [eventInfo, setEventInfo] = useState({
     title: "",
@@ -28,18 +33,27 @@ const UpdateEvent = () => {
   });
 
   useEffect(() => {
+    console.log('useEffect called'); // Add this to see when useEffect is called
+    console.log('eventId:', eventId);
+    console.log('token:', token);
+    console.log('location:', location);
+   
+      
+    
+
     const fetchEventDetails = async () => {
+
+     
+
       try {
-        // Fetch existing event details
-        const response = await fetch(`${BASE_URL}/api/event/${eventId}`, {
+        const response = await axios.get(`${BASE_URL}/api/event/${eventId}`, {
           headers: {
             Authorization: token,
           },
         });
 
-        if (response.ok) {
-          const data = await response.json();
-          // Set fetched details into state
+        if (response.status === 200) {
+          const data = response.data;
           setEventInfo({
             title: data.title,
             details: data.description,
@@ -50,17 +64,43 @@ const UpdateEvent = () => {
             totalSeats: data.totalSeats,
             ticketPrice: data.ticketPrice,
           });
+          console.log(data);
         } else {
-          console.error("Failed to fetch event details");
+          console.error("Failed to fetch event details", response);
         }
       } catch (error) {
         console.error("Error fetching event details:", error);
+        if (error.response && error.response.status === 401) {
+          console.log("Token expired");
+          logout();
+          setTokenExpired(true)
+          navigate("/login", {
+            replace: true,
+            state: {
+              message: "Session expired. Please log in again.",
+              from: location.pathname,
+            },
+          });
+        } else {
+          console.error("API request failed with status:", error.response ? error.response.status : "unknown");
+        }
       }
     };
 
-    fetchEventDetails();
-  }, [eventId]);
+    if (!tokenExpired ) {
+      fetchEventDetails();
+    } else {
+      navigate("/login", {
+        replace: true,
+        state: {
+          message: "You need to be logged in to view this page.",
+          from: location.pathname,
+        },
+      });
+    }
+  }, [eventId, token, logout, navigate]);
 
+  
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setEventInfo({ ...eventInfo, [name]: value });
@@ -84,23 +124,22 @@ const UpdateEvent = () => {
   const handleRemovePhoto = async (index) => {
     try {
       const imageLinkToDelete = eventInfo.photos[index];
-
+  
       // Make API request to delete the image
-      const response = await fetch(`${BASE_URL}/api/event/delete-image`, {
-        method: "DELETE",
+      const response = await axios.delete(`${BASE_URL}/api/event/delete-image`, {
         headers: {
           "Content-Type": "application/json",
           Authorization: token,
         },
-        body: JSON.stringify({
+        data: {
           eventId,
           imageLink: imageLinkToDelete,
-        }),
+        },
       });
-
-      if (response.ok) {
+  
+      if (response.status === 200) {
         console.log("Image deleted successfully!");
-
+  
         // Update state to rerender the component
         const updatedPhotos = [...eventInfo.photos];
         updatedPhotos.splice(index, 1);
@@ -110,15 +149,26 @@ const UpdateEvent = () => {
       }
     } catch (error) {
       console.error("Error deleting image:", error);
+      if (error.response && error.response.status === 401) {
+        console.log("Token expired");
+        logout();
+        setTokenExpired(true);
+        navigate("/login", {
+          replace: true,
+          state: {
+            message: "Session expired. Please log in again.",
+            from: location.pathname,
+          },
+        });
+      }
     }
   };
 
   const handleUpdateEvent = async () => {
     try {
       // Prepare the update request body
-
       const formData = new FormData();
-
+  
       formData.append("eventId", eventId);
       formData.append("title", eventInfo.title);
       formData.append("description", eventInfo.details);
@@ -127,22 +177,21 @@ const UpdateEvent = () => {
       formData.append("venue", eventInfo.venue);
       formData.append("totalSeats", parseInt(eventInfo.totalSeats));
       formData.append("ticketPrice", parseFloat(eventInfo.ticketPrice));
-
+  
       // Append new photos
       newPhotos.forEach((file, index) => {
         formData.append("images", file);
       });
-      console.log(formData);
-      // Send the update request
-      const response = await fetch(`${BASE_URL}/api/event/update-event`, {
-        method: "PUT",
+  
+      // Send the update request using Axios
+      const response = await axios.put(`${BASE_URL}/api/event/update-event`, formData, {
         headers: {
           Authorization: token,
+          'Content-Type': 'multipart/form-data', // Set content type for FormData
         },
-        body: formData,
       });
-
-      if (response.ok) {
+  
+      if (response.status === 200) {
         console.log("Event updated successfully!");
         // You can redirect the user or perform other actions after successful update
         toast.success("Event Updated successfully!", {
@@ -157,13 +206,21 @@ const UpdateEvent = () => {
         });
       } else {
         // Handle errors if the request was not successful
-        const responseData = await response.json();
-        console.log(responseData);
-        toast.error(
-          responseData?.message
-            ? responseData.message
-            : responseData.statusText,
-          {
+        console.error("Failed to update event:", response);
+        if (response.status === 401) {
+          // Token expired, handle logout and redirection
+          console.log("Token expired");
+          logout();
+          navigate("/login", {
+            replace: true,
+            state: {
+              message: "Session expired. Please log in again.",
+              from: location.pathname,
+            },
+          });
+        } else {
+          // Notify user of specific error message
+          toast.error(response?.data?.message || "Failed to update event", {
             position: "top-right",
             autoClose: 5000,
             hideProgressBar: false,
@@ -172,25 +229,39 @@ const UpdateEvent = () => {
             draggable: true,
             progress: undefined,
             theme: "light",
-          }
-        );
-        console.error("Failed to update event");
+          });
+        }
       }
     } catch (error) {
-      toast.error(error.message, {
-        position: "top-right",
-        autoClose: 1000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
+      // Handle network errors or other exceptions
       console.error("Error updating event:", error);
+      if (axios.isAxiosError(error) && error.response && error.response.status === 401) {
+        // Token expired, handle logout and redirection
+        console.log("Token expired");
+        logout();
+        setTokenExpired(true);
+        navigate("/login", {
+          replace: true,
+          state: {
+            message: "Session expired. Please log in again.",
+            from: location.pathname,
+          },
+        });
+      } else {
+        // Notify user of error
+        toast.error(error.message || "Failed to update event", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+      }
     }
   };
-
   return (
     <div className="bg-white container mx-auto mt-8 p-4">
       <h2 className="text-3xl font-semibold mb-4">Update Event</h2>
