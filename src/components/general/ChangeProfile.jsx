@@ -131,14 +131,14 @@ const ChangeProfile = () => {
   };
 
   return (
-    <div className="max-w-screen-xl h-full mx-auto p-6 bg-white rounded-md flex flex-col lg:flex-row justify-center items-center">
+    <div className="max-w-screen-xl h-full mx-auto p-6 bg-white rounded-md flex flex-col lg:flex-row justify-center items-center overflow-hidden">
       <ToastContainer />
-      <div className="relative mb-6">
-        <div className="rounded-md overflow-hidden w-96 h-96 mx-auto">
+      <div className="relative mb-6 lg:mr-6 lg:mb-0">
+        <div className="rounded-md overflow-hidden w-80 h-80 lg:w-96 lg:h-96 mx-auto">
           <img
             src={NewuserData.profileImage}
             alt="Profile"
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover rounded-full"
           />
         </div>
         <label
@@ -161,7 +161,7 @@ const ChangeProfile = () => {
         />
       </div>
 
-      <div className="w-full max-w-md p-5">
+      <div className="w-full max-w-md p-5 lg:ml-6">
         <div className="mb-6 flex items-center">
           <Icon
             path={mdiAccount}
@@ -203,27 +203,26 @@ const ChangeProfile = () => {
         isOpen={isModalOpen}
         onRequestClose={() => setIsModalOpen(false)}
         contentLabel="Edit Profile Image"
-        className="fixed inset-0 flex items-center justify-center p-4 z-10"
-        overlayClassName="fixed inset-0 bg-black bg-opacity-90 z-9"
+        className="fixed inset-0 flex items-center justify-center"
+        overlayClassName="fixed inset-0 bg-black bg-opacity-50 z-50"
       >
         <div className="bg-white rounded-lg shadow-lg p-6 max-w-lg w-full mx-auto relative">
           <h2 className="text-xl font-semibold mb-4">Edit Profile Image</h2>
           {newProfileImage && (
-            <div className="w-full h-64 relative mb-4">
+            <div className="w-full h-96 relative mb-4">
               <Cropper
                 image={newProfileImage}
                 crop={crop}
                 zoom={zoom}
                 aspect={1}
                 cropShape="round"
-                objectFit="contain"
+                // cropSize={{ width: 200, height: 300 }}
                 onCropChange={setCrop}
                 onZoomChange={setZoom}
                 onCropComplete={onCropComplete}
                 classes={{
                   containerClassName: "cropper-container",
-                  mediaClassName: "cropper-media",
-                  cropAreaClassName: "cropper-area"
+                  mediaClassName: "cropper-media"
                 }}
               />
             </div>
