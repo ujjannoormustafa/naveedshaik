@@ -1,4 +1,5 @@
 import React, { createContext, useState, useEffect, useContext } from "react";
+
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
@@ -6,32 +7,31 @@ export const AuthProvider = ({ children }) => {
   const [userData, setUserData] = useState(
     JSON.parse(localStorage.getItem("userData")) || null
   );
-  const [isLoggedIn,setIsLoggedIn] = useState(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem("token"));
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     console.log("token", token);
     console.log("userData", userData);
     console.log("auth useEffect: ");
-    if(token==="null"){
+    if (!token || token === "null") {
       console.log("if");
-      setIsLoggedIn(false)
-      setLoading(false)
-    }else{
+      setIsLoggedIn(false);
+      setLoading(false);
+    } else {
       console.log("else");
-      setIsLoggedIn(true)
-      setLoading(false)
+      setIsLoggedIn(true);
+      setLoading(false);
     }
-
-  },[])
+  }, [token]);
 
   const login = (newToken, newUser) => {
     setIsLoggedIn(true);
     setToken(newToken);
     setUserData(newUser);
     localStorage.setItem("token", newToken);
-    if (userData != undefined) {
-      localStorage.setItem("userData", JSON.stringify(userData));
+    if (newUser != undefined) {
+      localStorage.setItem("userData", JSON.stringify(newUser));
     }
   };
 
@@ -41,20 +41,17 @@ export const AuthProvider = ({ children }) => {
     setUserData(null);
     localStorage.removeItem("token");
     localStorage.removeItem("userData");
-    
   };
 
   useEffect(() => {
-    
-    console.log("isLogoedIN: ",isLoggedIn);
-   
+    console.log("isLoggedIn: ", isLoggedIn);
+
     // Update localStorage when token, userData, or cartData changes
     localStorage.setItem("token", token);
     if (userData != undefined) {
       localStorage.setItem("userData", JSON.stringify(userData));
     }
-    
-  }, [token, userData]);
+  }, [token, userData, isLoggedIn]);
 
   // Provide a default value for cartData if it's null or undefined
   return (
@@ -65,7 +62,6 @@ export const AuthProvider = ({ children }) => {
         userData,
         loading,
         login,
-
         logout,
       }}
     >

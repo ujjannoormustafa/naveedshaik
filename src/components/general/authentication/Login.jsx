@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Icon from "@mdi/react";
-import { useNavigate, Link,useLocation } from "react-router-dom";
+import { useNavigate, Link,useLocation,useHistory } from "react-router-dom";
 import { mdiAccount, mdiLock, mdiEyeOutline, mdiEyeOffOutline } from "@mdi/js";
 import { BASE_URL } from "../../../services/api";
 import { useAuth } from "../../../context/AuthContext";
@@ -12,6 +12,8 @@ const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const message = location?.state?.message;
+  const path = location.state?.from;
+
   console.log("message: ",message);
   // if(location?.state?.message){
   //   toast.error(message, {
@@ -31,7 +33,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState(null);
-
+  console.log(path);
   const handleInputChange = (e) => {
     if (e.target.name === "username") {
       setUsername(e.target.value);
@@ -64,6 +66,12 @@ const Login = () => {
           progress: undefined,
           theme: "light",
         });
+        if(path !== undefined) {
+          console.log("path: ",path);
+          navigate(path, { replace: true });
+          return;
+
+        }
         if (responseData.user.role === "admin") {
           navigate("/admin", { replace: true });
         } else {

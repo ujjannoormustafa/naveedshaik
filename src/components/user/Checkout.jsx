@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { BASE_URL } from '../../services/api';
-import { Link,useNavigate } from 'react-router-dom';
+import { Link,useNavigate,useLocation } from 'react-router-dom';
 import CheckoutForm from './CheckoutForm';
 import axios from 'axios';
 const stripePromise = loadStripe('pk_live_51Oda4PHSvDuMR6pwVmcCmszQnbOosphNs3Xpzl0h57BH2idPzuBRXiNgfXpuTXPHF5QPqMPHxMULCChp7fzG11R600irHtNpUs');
@@ -16,6 +16,7 @@ function Checkout() {
   const { eventId } = useParams();
   const { token,logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
     useEffect(() => {
     const fetchClientSecret = async () => {
@@ -40,7 +41,7 @@ function Checkout() {
           if (error.response.status === 401) {
             console.log("Token expired");
             logout();
-            navigate("/login", { replace: true,state: { message: "Session expired. Please log in again." }  });
+            navigate("/login", { replace: true,state: { message: "Session expired. Please log in again.",from: location.pathname }  });
           } else {
             console.error("API request failed with status:", error.response.status);
           }

@@ -11,12 +11,13 @@ import { useAuth } from "../../context/AuthContext";
 import { Link } from "react-router-dom";
 import { BASE_URL } from "../../services/api";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate,useLocation } from "react-router-dom";
 const BookedEvents = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [events, setEvents] = useState([]); // State to store events
   const { token, userData,logout } = useAuth();
   const navigate = useNavigate()
+  const location = useLocation();
 
   useEffect(() => {
     // Fetch events from the API
@@ -39,7 +40,7 @@ const BookedEvents = () => {
           if (error.response.status === 401) {
             console.log("Token expired");
             logout();
-        navigate("/login", { replace: true,state: { message: "Session expired. Please log in again." }  });
+            navigate("/login", { replace: true,state: { message: "Session expired. Please log in again.",from: location.pathname }  });
           } else {
             console.error("API request failed with status:", error.response.status);
           }

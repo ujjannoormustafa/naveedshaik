@@ -47,30 +47,23 @@ const ProtectedRoute = ({ element, role }) => {
   const location = useLocation();
 
   useEffect(() => {
-    console.log("Effective location");
-    localStorage.setItem("redirectPath", location.pathname); // Store the current path in localStorage
-    if (!loading && !initialCheck) {
+    console.log("islogged in: ",isLoggedIn);
+    console.log(loading);
+    if (!loading) {
+      localStorage.setItem("redirectPath", location.pathname); // Store the current path in localStorage
       if (!isLoggedIn) {
-        
-
         navigate("/login", { replace: true });
-      } else  {
+      } else {
         //use location path if available
         const redirectPath = localStorage.getItem("redirectPath");
-        console.log(redirectPath);
-        if (location.state && location.state.redirectPath || redirectPath) {
-          console.log("location path");
-          console.log(redirectPath);
-          navigate(redirectPath, { replace: true });
+        
+        if (location.state?.redirectPath !='/' || redirectPath !== '/') {
+          navigate(location.state?.redirectPath || redirectPath, { replace: true });
         } else {
-          navigate(userData?.role === "admin"? "/admin" : "/user", { replace: true });
+          navigate(userData?.role === "admin" ? "/admin" : "/user", { replace: true });
         }
-        // navigate(userData?.role === "admin" ? "/admin" : "/user", { replace: true });
       }
       setInitialCheck(true);
-    }
-    if(!isLoggedIn) {
-      navigate("/login", { replace: true});
     }
   }, [isLoggedIn, userData, role, navigate, loading, initialCheck]);
 

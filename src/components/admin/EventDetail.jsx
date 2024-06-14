@@ -1,46 +1,98 @@
 import React, { useState, useEffect } from "react";
-import { useParams, Link,useNavigate } from "react-router-dom";
+import { useParams, Link,useNavigate,useLocation } from "react-router-dom";
 import Icon from "@mdi/react";
 import { mdiCalendar, mdiClockOutline, mdiMapMarker, mdiTicket } from "@mdi/js";
 import { useAuth } from "../../context/AuthContext";
 import { BASE_URL } from "../../services/api";
+import isTokenExpired from "../../utils/verifyToken";
+
+import axios from "axios";
 const EventDetail = () => {
   const { eventId } = useParams();
   const navigate = useNavigate()
   const [event, setEvent] = useState(null);
   const { token, userData,logout } = useAuth();
+  const location = useLocation();
+  const [tokenExpired, setTokenExpired] = useState(false);
+
+  
+
+
 
   useEffect(() => {
+    console.log('useEffect called'); // Add this to see when useEffect is called
+    console.log('eventId:', eventId);
+    console.log('token:', token);
+    console.log('location:', location);
+   
+      
+    
+
     const fetchEventDetails = async () => {
+      console.log("data gone: ",event)
+      const tk = isTokenExpired(token)
+      console.log("TK: ", tk);
+
+     
+
       try {
-        const response = await fetch(`${BASE_URL}/api/event/${eventId}`, {
+        const response = await axios.get(`${BASE_URL}/api/event/${eventId}`, {
           headers: {
             Authorization: token,
           },
         });
-    
-        if (response.ok) {
-          const data = await response.json();
+
+        if (response.status === 200) {
+          const data = response.data;
           console.log(data);
           setEvent(data);
-        } else if (response.status === 401) {
-          // If unauthorized, redirect to login with a message
-          logout()
-          navigate("/login", {
-            state: { message: "Your session has expired. Please log in again." },
-            replace: true,
-          });
         } else {
-          console.error("Failed to fetch event details");
+          console.error("Failed to fetch event details", response);
         }
       } catch (error) {
         console.error("Error fetching event details:", error);
+        if (error.response && error.response.status === 401) {
+          console.log("Token expired");
+          logout();
+          setTokenExpired(true)
+          navigate("/login", {
+            replace: true,
+            state: {
+              message: "Session expired. Please log in again.",
+              from: location.pathname,
+            },
+          });
+        } else {
+          console.error("API request failed with status:", error.response ? error.response.status : "unknown");
+        }
       }
     };
 
-    fetchEventDetails();
-  }, [eventId]);
-
+    if (!tokenExpired ) {
+      fetchEventDetails();
+    } else {
+      navigate("/login", {
+        replace: true,
+        state: {
+          message: "You need to be logged in to view this page.",
+          from: location.pathname,
+        },
+      });
+    }
+  }, [eventId, token, logout, navigate]);
+  // useEffect(()=>{
+  //   console.log("verifying session");
+    
+  //   if(isTokenExpired(token)){
+  //     navigate("/login", {
+  //       replace: true,
+  //       state: {
+  //         message: "You need to be logged in to view this page.",
+  //         from: location.pathname,
+  //       },
+  //     });
+  //   }
+  // },[location,eventId, token, logout, navigate])
   if (!event) {
     return <p>Loading...</p>;
   }

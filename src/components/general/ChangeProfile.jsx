@@ -1,6 +1,6 @@
 // ChangeProfile.jsx
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate,useLocation } from "react-router-dom";
 import axios from "axios";
 import { mdiCamera, mdiCheck, mdiAccount, mdiPhone, mdiEmail } from "@mdi/js";
 import Icon from "@mdi/react";
@@ -11,6 +11,7 @@ import "react-toastify/dist/ReactToastify.css";
 const ChangeProfile = () => {
   const { token, userData,logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const [NewuserData, setUserData] = useState({
     full_name: "",
     profileImage: "",
@@ -112,7 +113,7 @@ const ChangeProfile = () => {
         setUploadStatus("Token expired. Please log in again.");
         // Handle token expiration, e.g., by logging out the user
         logout();
-        navigate("/login", { replace: true,state: { message: "Session expired. Please log in again." }  });
+        navigate("/login", { replace: true,state: { message: "Session expired. Please log in again.",from: location.pathname }  });
       } else {
         setUploadStatus("Failed to update profile image");
         toast.error("Failed to update profile image", {
