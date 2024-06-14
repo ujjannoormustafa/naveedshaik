@@ -117,4 +117,6 @@ export const StripeConnectProvider = ({ children }) => {
       {children}
     </StripeConnectContext.Provider>
   );
+
+  
 };

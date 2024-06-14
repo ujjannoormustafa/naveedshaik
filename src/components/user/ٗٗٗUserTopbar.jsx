@@ -104,10 +104,10 @@ const UserTopbar = ({ onToggleSidebar }) => {
             id="user-dropdown"
           >
             <div className="px-4 py-3">
-              <span className="block text-sm text-gray-900 dark:text-white">
+              <span className="block text-sm text-white ">
                {userData.full_name}
               </span>
-              <span className="block text-sm text-gray-500 truncate dark:text-gray-400">
+              <span className="block text-sm text-white truncate dark:text-white">
                 {userData.email}
               </span>
             </div>
@@ -115,7 +115,7 @@ const UserTopbar = ({ onToggleSidebar }) => {
               <li>
                 <Link to='/user'
                   onClick={toggleDropdown}
-                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+                  className="block px-4 py-2 text-sm text-white hover:bg-black  "
                 >
                   Dashboard
                 </Link>
@@ -123,7 +123,7 @@ const UserTopbar = ({ onToggleSidebar }) => {
               <li>
                 <Link to='/user/change-profile'
                   onClick={toggleDropdown}
-                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+                  className="block px-4 py-2 text-sm text-white hover:bg-black  "
                 >
                  Profile
                 </Link>
@@ -139,7 +139,7 @@ const UserTopbar = ({ onToggleSidebar }) => {
               <li>
                 <Link
                   onClick={handleLogout}
-                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+                  className="block px-4 py-2 text-sm text-white hover:bg-black  "
                 >
                   Sign out
                 </Link>
