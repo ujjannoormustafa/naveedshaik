@@ -12,7 +12,7 @@ import Modal from "react-modal";
 import getCroppedImg from "./cropImage"; // Implement this function
 import "./profile.css"
 const ChangeProfile = () => {
-  const { token, userData, logout } = useAuth();
+  const { token, userData, logout,insertUserData } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [NewuserData, setUserData] = useState({
@@ -74,11 +74,10 @@ const ChangeProfile = () => {
       );
 
       if (response.status === 200) {
+        console.log(response)
         setUploadStatus("Profile image updated successfully");
-        setUserData((prevUserData) => ({
-          ...prevUserData,
-          profileImage: response.data.user.profileImage,
-        }));
+        setUserData(response.data.user);
+        insertUserData(response.data.user);
         toast.success("Profile image updated successfully", {
           position: "top-right",
           autoClose: 1000,
