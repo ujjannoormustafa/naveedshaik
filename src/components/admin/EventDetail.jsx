@@ -27,6 +27,7 @@ const EventDetail = () => {
         });
         if (response.status === 200) {
           const data = response.data;
+          console.log(data)
           setEvent(data);
         } else {
           console.error("Failed to fetch event details", response);

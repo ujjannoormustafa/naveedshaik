@@ -18,6 +18,7 @@ const CreateEvent = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [tokenExpired, setTokenExpired] = useState(false);
+  const [loading,setLoading] = useState(false);
   const [eventInfo, setEventInfo] = useState({
     title: "",
     details: "",
@@ -34,31 +35,31 @@ const CreateEvent = () => {
     setEventInfo({ ...eventInfo, [name]: value });
   };
 
-   // Function to handle file change with compression
-   const handleFileChange = (e) => {
+  const handleFileChange = (e) => {
     const files = e.target.files;
-    const compressedFiles = [];
+    const updatedMediaFiles = [];
   
-    Array.from(files).forEach((file) => {
-      if (!file.type.startsWith('image/')) {
-        console.warn('Skipping non-image file:', file.name);
-        return; // Skip non-image files
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+  
+      if (!file.type.startsWith('image/') && !file.type.startsWith('video/')) {
+        console.warn('Skipping non-image and non-video file:', file.name);
+        continue; // Skip non-image and non-video files
       }
   
-      // Proceed with compression for image files
-      new Compressor(file, {
-        quality: 0.6,
-        maxWidth: 800,
-        success(result) {
-          compressedFiles.push(result);
-          setEventInfo({ ...eventInfo, mediaFiles: [...eventInfo.mediaFiles, result] });
-        },
-        error(err) {
-          console.error("Compression error:", err.message);
-        },
-      });
-    });
+      updatedMediaFiles.push(file);
+    }
+  
+    // Update eventInfo state to include all selected media files
+    setEventInfo(prevEventInfo => ({
+      ...prevEventInfo,
+      mediaFiles: [...prevEventInfo.mediaFiles, ...updatedMediaFiles]
+    }));
   };
+  
+  
+  
+  
 
 
   const handleRemoveMedia = (index) => {
@@ -68,6 +69,7 @@ const CreateEvent = () => {
   };
 
   const handleCreateEvent = async () => {
+    setLoading(true);
     try {
       if (!token) {
         console.error("User token not available");
@@ -95,6 +97,7 @@ const CreateEvent = () => {
       });
 
       if (response.status === 200) {
+        setLoading(false)
         const responseData = response.data;
         console.log("Event created successfully:", responseData.event);
         setEventInfo({
@@ -118,6 +121,7 @@ const CreateEvent = () => {
           theme: "light",
         });
       } else {
+        setLoading(false)
         console.error("Failed to create event:", response);
         if (response.status === 401) {
           console.log("Token expired");
@@ -130,6 +134,7 @@ const CreateEvent = () => {
             },
           });
         } else {
+          setLoading(false)
           toast.error(response?.data?.message || "Failed to create event", {
             position: "top-right",
             autoClose: 5000,
@@ -143,6 +148,7 @@ const CreateEvent = () => {
         }
       }
     } catch (error) {
+      setLoading(false)
       console.error("Error creating event:", error);
       if (error.response && error.response.status === 401) {
         console.log("Token expired");
@@ -155,6 +161,7 @@ const CreateEvent = () => {
           },
         });
       } else {
+        setLoading(false)
         toast.error(error.message || "Error creating event", {
           position: "top-right",
           autoClose: 5000,
@@ -234,6 +241,7 @@ const CreateEvent = () => {
             <div className="m-2 flex flex-wrap">
               {eventInfo.mediaFiles.map((file, index) => (
                 <div key={index} className="relative bg-green">
+                  {console.log(file.type.startsWith("image/"))}
                   {file.type.startsWith("image/") ? (
                     <img
                       src={URL.createObjectURL(file)}
@@ -371,7 +379,7 @@ const CreateEvent = () => {
           onClick={handleCreateEvent}
           className="bg-black text-white py-2 px-4 rounded-md transition duration-300"
         >
-          Create Event
+          {loading ? "Creating Event..." : "Create Event"}
         </button>
       </form>
       <ToastContainer />

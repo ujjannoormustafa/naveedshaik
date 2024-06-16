@@ -113,11 +113,43 @@ const Event = ({ event }) => {
     <div className="relative  border m-2 rounded-md overflow-hidden hover:cursor-pointer">
       <Link to={`/user/${event._id}`}>
         <div className="h-40 md:h-60 bg-cover bg-center transition-transform duration-300 ease-in-out transform hover:scale-105 hover:bg-opacity-50 hover:opacity-70 transition-opacity duration-300 ease-in-out ">
-          <img
-            src={images.length > 0 ? images[0] : "default_image_url"} // Replace with your default image URL
-            alt={title}
+        {images?.length > 0 && (
+              <>
+                {images.map((photo, index) => (
+                  <div key={index} className="relative bg-green">
+                    { 
+                    
+                    /\.(jpg|jpeg|png|gif|bmp)$/.test(photo) ? (
+                  <img
+                  src={
+                    photo instanceof File
+                    ? URL.createObjectURL(photo)
+                    : photo
+                    }
+                  alt={`Event Media ${index + 1}`}
+                  width="100%"
+                  height="100%"
             className="w-full h-full object-cover transition-transform duration-300 ease-in-out transform hover:scale-105"
-          />
+                />
+              ) : (
+                <video
+                src={
+                  photo instanceof File
+                  ? URL.createObjectURL(photo)
+                  : photo
+                  }
+                  width="100%"
+                  height="100%"
+            className="w-full h-full object-cover transition-transform duration-300 ease-in-out transform hover:scale-105"
+                  controls
+
+                />  )
+                  }
+                   
+                  </div>
+                ))}
+              </>
+            )}
           <div className="absolute top-0 left-0 w-full h-full bg-black opacity-50"></div>
 
           <div className="absolute top-0  left-0 w-full p-4 ">

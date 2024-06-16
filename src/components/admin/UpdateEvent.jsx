@@ -22,7 +22,7 @@ const UpdateEvent = () => {
   const [tokenExpired,setTokenExpired] = useState(false)
   const navigate = useNavigate();
   const location = useLocation();
-
+const [loading,setLoading] = useState(false);
   const [eventInfo, setEventInfo] = useState({
     title: "",
     details: "",
@@ -197,6 +197,7 @@ const UpdateEvent = () => {
 
   const handleUpdateEvent = async () => {
     try {
+      setLoading(true)
       // Prepare the update request body
       const formData = new FormData();
   
@@ -227,6 +228,7 @@ const UpdateEvent = () => {
   
       if (response.status === 200) {
         console.log("Event updated successfully!");
+        setLoading(false)
         // You can redirect the user or perform other actions after successful update
         toast.success("Event Updated successfully!", {
           position: "top-right",
@@ -240,6 +242,7 @@ const UpdateEvent = () => {
         });
       } else {
         // Handle errors if the request was not successful
+        setLoading(false)
         console.error("Failed to update event:", response);
         if (response.status === 401) {
           // Token expired, handle logout and redirection
@@ -253,6 +256,7 @@ const UpdateEvent = () => {
             },
           });
         } else {
+          setLoading(false)
           // Notify user of specific error message
           toast.error(response?.data?.message || "Failed to update event", {
             position: "top-right",
@@ -283,6 +287,7 @@ const UpdateEvent = () => {
         });
       } else {
         // Notify user of error
+        setLoading(false)
         toast.error(error.message || "Failed to update event", {
           position: "top-right",
           autoClose: 5000,
@@ -563,9 +568,10 @@ const UpdateEvent = () => {
         <button
           type="button"
           onClick={handleUpdateEvent}
+          disabled={loading}
           className="bg-black text-white py-2 px-4 rounded-md transition duration-300"
         >
-          Update Event
+          {loading ? "Loading..." : "Update Event"}
         </button>
       </form>
       <ToastContainer />
