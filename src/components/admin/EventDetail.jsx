@@ -79,23 +79,45 @@ const EventDetail = () => {
 
   return (
     <div className="container mx-auto p-4">
-      <div className="max-w-2xl mx-auto bg-white rounded-lg overflow-hidden shadow-md">
-        <img
-          className="w-full h-64 object-cover object-center"
-          src={images?.length > 0 && images[0]}
-          alt={title}
-        />
+      <div className=" bg-white rounded-lg overflow-hidden shadow-md">
+       {images.length >0 &&  /\.(jpg|jpeg|png|gif|bmp)$/.test(images[0]) ? (
+                    <img
+                    src={
+                      images[0] instanceof File
+                      ? URL.createObjectURL(images[0])
+                      : images[0]
+                      }
+                    alt={`Event Media`}
+                    width="100%"
+                    height="100%"
+                    className="w-full h-64 object-cover object-center"
+                    />
+                ) : (
+                  <video
+                  src={
+                    images[0] instanceof File
+                    ? URL.createObjectURL(images[0])
+                    : images[0]
+                    }
+                    width="100%"
+                    height="100%"
+                    className="w-full h-64 object-cover object-center"
+                    autoPlay  // Enable autoplay
+        controls  // Show playback controls
+        loop  // Loop the video
+  
+                  />  )}
         <div className="p-6">
           <h2 className="text-3xl font-semibold text-black mb-4">{title}</h2>
           <div className="flex  mb-4">
             <button
-              className={`px-4 py-2 ${activeTab === "details" ? "bg-gray-800 text-white" : "bg-gray-200 text-black"} rounded-md`}
+              className={`px-4 py-2 ${activeTab === "details" ? "bg-black text-white" : "bg-white text-black border "} rounded-md  ml-5`}
               onClick={() => setActiveTab("details")}
             >
               Event Details
             </button>
             <button
-              className={`px-4 py-2 ${activeTab === "gallery" ? "bg-gray-800 text-white" : "bg-gray-200 text-black"} rounded-md  ml-5`}
+              className={`px-4 py-2 ${activeTab === "gallery" ? "bg-black text-white" : "bg-white text-black border "} rounded-md  ml-5`}
               onClick={() => setActiveTab("gallery")}
             >
               Gallery
@@ -137,15 +159,36 @@ const EventDetail = () => {
           {activeTab === "gallery" && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {images && images.map((image, index) => (
-                <img
-                  key={index}
-                  className="w-full h-64 object-cover object-center"
-                  src={image}
-                  alt={`Event image ${index + 1}`}
-                />
+                   /\.(jpg|jpeg|png|gif|bmp)$/.test(image) ? (
+                    <img
+                    src={
+                      image instanceof File
+                      ? URL.createObjectURL(image)
+                      : image
+                      }
+                    alt={`Event Media ${index + 1}`}
+                    width="100%"
+                    height="100%"
+                    className="w-full h-64 object-cover object-center"
+                    />
+                ) : (
+                  <video
+                  src={
+                    image instanceof File
+                    ? URL.createObjectURL(image)
+                    : image
+                    }
+                    width="100%"
+                    height="100%"
+                    className="w-full h-64 object-cover object-center"
+                    controls
+  
+                  />  )
               ))}
             </div>
           )}
+
+
           <div className="flex justify-end mt-4">
             {userData.role === "admin" ? (
               <Link

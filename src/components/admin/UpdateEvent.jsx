@@ -13,6 +13,8 @@ import { useAuth } from "../../context/AuthContext";
 import { BASE_URL } from "../../services/api";
 import { useNavigate,useLocation } from "react-router-dom";
 import axios from "axios";
+import Compressor from "compressorjs"; // Import Compressor library
+
 const UpdateEvent = () => {
   const { eventId } = useParams();
   const { token, userData,logout } = useAuth();
@@ -24,7 +26,7 @@ const UpdateEvent = () => {
   const [eventInfo, setEventInfo] = useState({
     title: "",
     details: "",
-    photos: [],
+    mediaFiles: [],
     date: "",
     time: "",
     venue: "",
@@ -57,13 +59,14 @@ const UpdateEvent = () => {
           setEventInfo({
             title: data.title,
             details: data.description,
-            photos: data.images,
+            mediaFiles: data.images,
             date: data.date.split("T")[0],
             time: data.time,
             venue: data.venue,
             totalSeats: data.totalSeats,
             ticketPrice: data.ticketPrice,
           });
+          
           console.log(data);
         } else {
           console.error("Failed to fetch event details", response);
@@ -106,11 +109,29 @@ const UpdateEvent = () => {
     setEventInfo({ ...eventInfo, [name]: value });
   };
 
+  // Function to handle file change with compression
   const handleFileChange = (e) => {
     const files = e.target.files;
     setNewPhotos([...newPhotos, ...files]);
+    const compressedFiles = [];
+    
+    // // Iterate over selected files and compress them
+    // Array.from(files).forEach((file) => {
+    //   new Compressor(file, {
+    //     quality: 0.6, // Adjust quality as needed
+    //     maxWidth: 800, // Adjust max width as needed
+    //     success(result) {
+    //       compressedFiles.push(result);
+    //       setNewPhotos(result)
+    //     },
+    //     error(err) {
+    //       console.error("Compression error:", err.message);
+    //       // Handle compression error if needed
+    //     },
+    //   });
+    // });
   };
-  const handleRemoveLocalPhoto = (index) => {
+  const handleRemoveLocalMedia = (index) => {
     // Copy the newPhotos array
     const updatedNewPhotos = [...newPhotos];
 
@@ -120,10 +141,15 @@ const UpdateEvent = () => {
     // Update the newPhotos state
     setNewPhotos(updatedNewPhotos);
   };
-
-  const handleRemovePhoto = async (index) => {
+  // const handleRemoveMedia = (index) => {
+  //   const updatedMediaFiles = [...eventInfo.mediaFiles];
+  //   updatedMediaFiles.splice(index, 1);
+  //   setEventInfo({ ...eventInfo, mediaFiles: updatedMediaFiles });
+  // };
+  const handleRemoveMedia = async (index) => {
     try {
-      const imageLinkToDelete = eventInfo.photos[index];
+      const imageLinkToDelete = eventInfo.mediaFiles[index];
+      console.log(imageLinkToDelete);
   
       // Make API request to delete the image
       const response = await axios.delete(`${BASE_URL}/api/event/delete-image`, {
@@ -141,9 +167,9 @@ const UpdateEvent = () => {
         console.log("Image deleted successfully!");
   
         // Update state to rerender the component
-        const updatedPhotos = [...eventInfo.photos];
+        const updatedPhotos = [...eventInfo.mediaFiles];
         updatedPhotos.splice(index, 1);
-        setEventInfo({ ...eventInfo, photos: updatedPhotos });
+        setEventInfo({ ...eventInfo, mediaFiles: updatedPhotos });
       } else {
         console.error("Failed to delete image");
       }
@@ -163,6 +189,11 @@ const UpdateEvent = () => {
       }
     }
   };
+  // const handleKeyPress = (event) => {
+  //   if (event.key === "Enter") {
+  //     handleUpdateEvent();
+  //   }
+  // };
 
   const handleUpdateEvent = async () => {
     try {
@@ -179,10 +210,13 @@ const UpdateEvent = () => {
       formData.append("ticketPrice", parseFloat(eventInfo.ticketPrice));
   
       // Append new photos
-      newPhotos.forEach((file, index) => {
-        formData.append("images", file);
-      });
-  
+      for (const mediaFile of eventInfo.mediaFiles) {
+        formData.append("mediaFiles", mediaFile);
+      }
+      for (const mediaFile of newPhotos) {
+        formData.append("mediaFiles", mediaFile);
+      }
+      console.log(formData.time);
       // Send the update request using Axios
       const response = await axios.put(`${BASE_URL}/api/event/update-event`, formData, {
         headers: {
@@ -303,37 +337,64 @@ const UpdateEvent = () => {
             htmlFor="eventPhotos"
             className="block text-lg font-bold  text-black"
           >
-            Event Photos
+            Event Media
           </label>
           <input
             type="file"
-            id="eventPhotos"
-            name="photos"
+            id="eventMedia"
+            name="mediaFiles"
             onChange={handleFileChange}
+            // onKeyPress={handleKeyPress}
             multiple
-            accept="image/*"
+            accept="image/*,video/*"
             className="mt-1 p-2 border border-gray-300 rounded-md w-full"
           />
           <div className="m-2 flex flex-wrap ">
-            {eventInfo.photos.length > 0 && (
+            {/* {
+              eventInfo.photos.map((link) => {
+                const isImage = /\.(jpg|jpeg|png|gif|bmp)$/.test(link);
+                const isVideo = /\.(mp4|mov|webm)$/.test(link);
+                console.log(isImage);
+                console.log(isVideo);
+              })
+            } */}
+            
+            {eventInfo?.mediaFiles?.length > 0 && (
               <>
-                {eventInfo.photos.map((photo, index) => (
+                {eventInfo?.mediaFiles?.map((photo, index) => (
                   <div key={index} className="relative bg-green">
-                    <img
-                      src={
-                        photo instanceof File
-                          ? URL.createObjectURL(photo)
-                          : photo
-                      }
-                      alt={`Event Photo ${index + 1}`}
-                      width="100%"
-                      height="100%"
-                      className="h-16 w-16 object-contain m-4 rounded-md sm:h-20 sm:w-20 md:h-24 md:w-24 lg:h-32 lg:w-32 xl:h-40 xl:w-40"
-                    />
+                    { 
+                    
+                    /\.(jpg|jpeg|png|gif|bmp)$/.test(photo) ? (
+                  <img
+                  src={
+                    photo instanceof File
+                    ? URL.createObjectURL(photo)
+                    : photo
+                    }
+                  alt={`Event Media ${index + 1}`}
+                  width="100%"
+                  height="100%"
+                  className="h-16 w-16 object-contain m-4 rounded-md sm:h-20 sm:w-20 md:h-24 md:w-24 lg:h-32 lg:w-32 xl:h-40 xl:w-40"
+                />
+              ) : (
+                <video
+                src={
+                  photo instanceof File
+                  ? URL.createObjectURL(photo)
+                  : photo
+                  }
+                  width="100%"
+                  height="100%"
+                  className="h-16 w-16 object-contain m-4 rounded-md sm:h-20 sm:w-20 md:h-24 md:w-24 lg:h-32 lg:w-32 xl:h-40 xl:w-40"
+                  controls
+
+                />  )
+                  }
                     <button
                       type="button"
                       className="absolute top-0 right-0  p-1 bg-white rounded-full text-red-500 hover:bg-red-100 focus:outline-none"
-                      onClick={() => handleRemovePhoto(index)}
+                      onClick={() => handleRemoveMedia(index)}
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -354,25 +415,44 @@ const UpdateEvent = () => {
                 ))}
               </>
             )}
-            {newPhotos.length > 0 && (
+            {newPhotos?.length > 0 && (
               <>
-                {newPhotos.map((photo, index) => (
+              {console.log(newPhotos)}
+                {newPhotos?.map((photo, index) => (
                   <div key={index} className="relative bg-green">
-                    <img
-                      src={
-                        photo instanceof File
-                          ? URL.createObjectURL(photo)
-                          : photo
-                      }
-                      alt={`Event Photo ${index + 1}`}
-                      width="100%"
-                      height="100%"
-                      className="h-16 w-16 object-contain m-4 rounded-md sm:h-20 sm:w-20 md:h-24 md:w-24 lg:h-32 lg:w-32 xl:h-40 xl:w-40"
-                    />
+                    {console.log(photo)}
+                    { 
+                    
+                    /\.(jpg|jpeg|png|gif|bmp)$/.test(photo.name) ? (
+                  <img
+                  src={
+                    photo instanceof File
+                    ? URL.createObjectURL(photo)
+                    : photo
+                    }
+                  alt={`Event Media ${index + 1}`}
+                  width="100%"
+                  height="100%"
+                  className="h-16 w-16 object-contain m-4 rounded-md sm:h-20 sm:w-20 md:h-24 md:w-24 lg:h-32 lg:w-32 xl:h-40 xl:w-40"
+                />
+              ) : (
+                <video
+                src={
+                  photo instanceof File
+                  ? URL.createObjectURL(photo)
+                  : photo
+                  }
+                  width="100%"
+                  height="100%"
+                  className="h-16 w-16 object-contain m-4 rounded-md sm:h-20 sm:w-20 md:h-24 md:w-24 lg:h-32 lg:w-32 xl:h-40 xl:w-40"
+                  controls
+
+                />  )
+                  }
                     <button
                       type="button"
                       className="absolute top-0 right-0  p-1 bg-white rounded-full text-red-500 hover:bg-red-100 focus:outline-none"
-                      onClick={() => handleRemoveLocalPhoto(index)}
+                      onClick={() => handleRemoveLocalMedia(index)}
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
