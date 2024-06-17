@@ -34,6 +34,7 @@ const CreateEvent = () => {
     const { name, value } = e.target;
     setEventInfo({ ...eventInfo, [name]: value });
   };
+  const MAX_FILE_SIZE = 100 * 1024 * 1024; // 100MB
 
   const handleFileChange = (e) => {
     const files = e.target.files;
@@ -41,6 +42,21 @@ const CreateEvent = () => {
   
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
+      if (file.size > MAX_FILE_SIZE) {
+        console.warn('File is too large:', file.name);
+        const message = `File ${file.name} is too large. Maximum allowed size is 100MB.`
+        toast.error(message, {
+          position: "top-right",
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+        continue; // Skip files that are too large
+      }
   
       if (!file.type.startsWith('image/') && !file.type.startsWith('video/')) {
         console.warn('Skipping non-image and non-video file:', file.name);

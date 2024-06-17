@@ -109,28 +109,37 @@ const [loading,setLoading] = useState(false);
     setEventInfo({ ...eventInfo, [name]: value });
   };
 
-  // Function to handle file change with compression
-  const handleFileChange = (e) => {
-    const files = e.target.files;
-    setNewPhotos([...newPhotos, ...files]);
-    const compressedFiles = [];
-    
-    // // Iterate over selected files and compress them
-    // Array.from(files).forEach((file) => {
-    //   new Compressor(file, {
-    //     quality: 0.6, // Adjust quality as needed
-    //     maxWidth: 800, // Adjust max width as needed
-    //     success(result) {
-    //       compressedFiles.push(result);
-    //       setNewPhotos(result)
-    //     },
-    //     error(err) {
-    //       console.error("Compression error:", err.message);
-    //       // Handle compression error if needed
-    //     },
-    //   });
-    // });
-  };
+  const MAX_FILE_SIZE = 100 * 1024 * 1024; // 100MB
+
+const handleFileChange = (e) => {
+  const files = e.target.files;
+  const validFiles = [];
+
+  for (let i = 0; i < files.length; i++) {
+    const file = files[i];
+
+    if (file.size > MAX_FILE_SIZE) {
+      console.warn('File is too large:', file.name);
+      const message = `File ${file.name} is too large. Maximum allowed size is 100MB.`
+      toast.error(message, {
+        position: "top-right",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+      continue; // Skip files that are too large
+    }
+
+    validFiles.push(file);
+  }
+
+  // Update state with valid files
+  setNewPhotos(prevPhotos => [...prevPhotos, ...validFiles]);
+};
   const handleRemoveLocalMedia = (index) => {
     // Copy the newPhotos array
     const updatedNewPhotos = [...newPhotos];
