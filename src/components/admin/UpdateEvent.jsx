@@ -218,7 +218,12 @@ const handleFileChange = (e) => {
       formData.append("venue", eventInfo.venue);
       formData.append("totalSeats", parseInt(eventInfo.totalSeats));
       formData.append("ticketPrice", parseFloat(eventInfo.ticketPrice));
-  
+      
+
+     
+
+
+
       // Append new photos
       for (const mediaFile of eventInfo.mediaFiles) {
         formData.append("mediaFiles", mediaFile);
@@ -233,6 +238,7 @@ const handleFileChange = (e) => {
           Authorization: token,
           'Content-Type': 'multipart/form-data', // Set content type for FormData
         },
+        timeout: 120000000, // Timeout set to 10 seconds
       });
   
       if (response.status === 200) {

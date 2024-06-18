@@ -110,6 +110,7 @@ const CreateEvent = () => {
           Authorization: token,
           'Content-Type': 'multipart/form-data',
         },
+        timeout: 120000000, // Timeout set to 10 seconds
       });
 
       if (response.status === 200) {
