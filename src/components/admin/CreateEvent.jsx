@@ -91,7 +91,13 @@ const CreateEvent = () => {
         console.error("User token not available");
         return;
       }
-
+      if(!eventInfo.mediaFiles){
+        console.log(eventInfo.mediaFiles);
+        console.log("No Media Files");
+      }else{
+        console.log("Media files are present");
+        console.log(eventInfo.mediaFiles);
+      }
       const formData = new FormData();
       formData.append("title", eventInfo.title);
       formData.append("description", eventInfo.details);
