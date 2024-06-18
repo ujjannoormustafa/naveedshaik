@@ -238,7 +238,7 @@ const handleFileChange = (e) => {
           Authorization: token,
           'Content-Type': 'multipart/form-data', // Set content type for FormData
         },
-        timeout: 120000000, // Timeout set to 10 seconds
+        timeout: 1200000000, // Timeout set to 10 seconds
       });
   
       if (response.status === 200) {
