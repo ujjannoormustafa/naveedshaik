@@ -36,21 +36,60 @@ const Topbar = ({ onToggleSidebar }) => {
   const [selectedIndex, setSelectedIndex] = useState(-1); // Tracks the selected index
 
   const navigate = useNavigate();
+  // const routes = [
+  //   { name: 'Profile', path: '/admin/change-profile' },
+  //   { name: 'Dashboard', path: '/admin' },
+  //   { name: 'Settings', path: '/settings' },
+  //   { name: 'Create Event', path: '/admin/create-event' },
+  //   { name: 'Event List', path: '/admin/event-list' },
+  //   { name: 'Calendar', path: '/admin/calendar' },
+  //   { name: 'Connect Account', path: '/admin/connect-account' },
+  //   { name: 'Account', path: '/admin/check-account-status' },
+  //   { name: 'Verify Account', path: '/admin/verify-requirements' },
+  //   { name: 'Add External Account', path: '/admin/add-external-account' },
+  //   { name: 'View Balance', path: '/admin/view-balance' },
+  //   { name: 'Manage Account', path: '/admin/manage-account' },
+  //   { name: 'All Payments', path: '/admin/all-payments' },
+  // ];
   const routes = [
-    { name: 'Profile', path: '/admin/change-profile' },
-    { name: 'Dashboard', path: '/admin' },
-    { name: 'Settings', path: '/settings' },
-    { name: 'Create Event', path: '/admin/create-event' },
-    { name: 'Event List', path: '/admin/event-list' },
-    { name: 'Calendar', path: '/admin/calendar' },
-    { name: 'Connect Account', path: '/admin/connect-account' },
-    { name: 'Check Account Status', path: '/admin/check-account-status' },
-    { name: 'Verify Account Requirements', path: '/admin/verify-requirements' },
-    { name: 'Add External Account', path: '/admin/add-external-account' },
-    { name: 'View Balance', path: '/admin/view-balance' },
-    { name: 'Manage Account', path: '/admin/manage-account' },
-    { name: 'All Payments', path: '/admin/all-payments' },
+    { name: 'Profile', path: '/admin/change-profile', keywords: ['profile', 'user', 'edit profile'] },
+    { name: 'Dashboard', path: '/admin', keywords: ['dashboard', 'home', 'main'] },
+    { name: 'Settings', path: '/settings', keywords: ['settings', 'preferences', 'configuration'] },
+    { name: 'Create Event', path: '/admin/create-event', keywords: ['create', 'event', 'new event'] },
+    { name: 'Event List', path: '/admin/event-list', keywords: ['events', 'list', 'all events'] },
+    { name: 'Calendar', path: '/admin/calendar', keywords: ['calendar', 'schedule', 'dates'] },
+    { name: 'Connect Account', path: '/admin/connect-account', keywords: ['connect', 'account', 'link account'] },
+    { name: 'Account', path: '/admin/check-account-status', keywords: ['account', 'status', 'check account'] },
+    { name: 'Verify Account', path: '/admin/verify-requirements', keywords: ['verify', 'account', 'requirements'] },
+    { name: 'Add External Account', path: '/admin/add-external-account', keywords: ['add', 'external', 'account','bank account', 'add bank account','connect bank account'] },
+    { name: 'View Balance', path: '/admin/view-balance', keywords: ['balance', 'view', 'account balance'] },
+    { name: 'Manage Account', path: '/admin/manage-account', keywords: ['manage', 'account', 'account settings'] },
+    { name: 'All Payments', path: '/admin/all-payments', keywords: ['payments', 'all payments', 'transactions'] },
   ];
+  
+
+  const handleChange = (e) => {
+    setIsFocused(true);
+    setSearchTerm(e.target.value);
+  
+    const term = e.target.value.toLowerCase();
+    const filtered = routes.filter(route => 
+      route.keywords.some(keyword => keyword.toLowerCase().includes(term))
+    );
+    setFilteredRoutes(filtered);
+  
+    // Set the selected index to 0 if the filtered list is not empty
+    if (filtered.length > 0) {
+      setSelectedIndex(0);
+    } else {
+      setSelectedIndex(-1);
+    }
+  };
+  
+  const handleSelect = (path) => {
+    navigate(path);
+  };
+  
   useEffect(() => {
     const handler = (event) => {
       if (event.key === 'ArrowDown') {
@@ -65,59 +104,54 @@ const Topbar = ({ onToggleSidebar }) => {
         );
       } else if (event.key === 'Enter' && selectedIndex !== -1) {
         handleSelect(filteredRoutes[selectedIndex].path);
+        setIsFocused(false)
       }
     };
-
+  
     document.addEventListener('keydown', handler);
-
     return () => {
       document.removeEventListener('keydown', handler);
     };
   }, [filteredRoutes, selectedIndex]);
-  const filterRoutes = (value) => {
-    const filtered = routes.filter((route) =>
-      route.name.toLowerCase().includes(value.toLowerCase())
-    );
-    setFilteredRoutes(filtered);
-    setSelectedIndex(-1); // Reset selectedIndex when filtering routes
-  };
 
   const handleSearch = (e) => {
-    if (e.key === 'Enter' && filteredRoutes.length > 0) {
-      if(filteredRoutes[selectedIndex] != undefined){
+    if (e.key === 'Enter') {
+      if (filteredRoutes.length > 0 && selectedIndex !== -1) {
         handleSelect(filteredRoutes[selectedIndex].path);
-      }else{
-        const value = e.target.value.toLowerCase();
-      const matchedRoute = routes.find(route =>
-        route.name.toLowerCase() === value
-      );
-      if (matchedRoute) {
-        navigate(matchedRoute.path);
       } else {
-        console.log("No matching route found");
-      }
+        const value = e.target.value.toLowerCase();
+        const matchedRoute = routes.find(route =>
+          route.name.toLowerCase() === value || 
+          route.keywords.some(keyword => keyword.toLowerCase() === value)
+        );
+        if (matchedRoute) {
+          navigate(matchedRoute.path);
+        } else {
+          console.log("No matching route found");
+        }
       }
     }
   };
+
   const handleClickOption = (index) => {
     setSelectedIndex(index);
     handleSelect(filteredRoutes[index].path);
   };
 
-  const handleChange = (e) => {
-    setIsFocused(true)
-    const value = e.target.value.toLowerCase();
-    setSearchTerm(value);
-    filterRoutes(value);
-  };
+  // const handleChange = (e) => {
+  //   setIsFocused(true)
+  //   const value = e.target.value.toLowerCase();
+  //   setSearchTerm(value);
+  //   filterRoutes(value);
+  // };
 
-  const handleSelect = (path) => {
-    console.log("handleSelect called");
-    console.log(path);
-    navigate(path);
-    setIsFocused(false)
-    setSearchTerm('');
-  };
+  // const handleSelect = (path) => {
+  //   console.log("handleSelect called");
+  //   console.log(path);
+  //   navigate(path);
+  //   setIsFocused(false)
+  //   setSearchTerm('');
+  // };
 
   const handleFocus = () => {
     setIsFocused(true);
@@ -158,7 +192,7 @@ const Topbar = ({ onToggleSidebar }) => {
             <Icon id="toggleButton" path={mdiMenu} size={1} />
           </div>
 
-          <div className="relative">
+          <div className="mx-2 relative w-full sm:max-w-xs">
             <div
               className="flex items-center bg-white p-2 rounded-full"
               // style={{ borderRadius: '5%' }}
@@ -204,7 +238,7 @@ const Topbar = ({ onToggleSidebar }) => {
             <div className="cursor-pointer" onClick={toggleDropdown}>
               {userData.profileImage ? (
                 <img
-                  className="w-10 h-10 rounded-full"
+                  className="w-12 h-10 sm:w-12 sm:h-auto rounded-full"
                   src={userData.profileImage}
                   alt="Rounded avatar"
                 />

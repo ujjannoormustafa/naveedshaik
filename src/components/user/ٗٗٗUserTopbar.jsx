@@ -270,7 +270,7 @@ const UserTopbar = ({ onToggleSidebar }) => {
             <Icon id="toggleButton" path={mdiMenu} size={1} />
           </div>
 
-          <div className="relative">
+          <div className=" mx-2 relative w-full sm:max-w-xs">
             <div
               className="flex items-center bg-white p-2 rounded-full"
               ref={dropdownRef}
@@ -279,7 +279,7 @@ const UserTopbar = ({ onToggleSidebar }) => {
               <input
                 type="text"
                 placeholder="Search"
-                className="ml-2 bg-white border-none focus:outline-none text-black"
+                className="ml-2  bg-white border-none focus:outline-none text-black"
                 value={searchTerm}
                 onChange={handleChange}
                 onKeyDown={handleSearch}
@@ -350,11 +350,11 @@ const UserTopbar = ({ onToggleSidebar }) => {
             )}
           </div>
 
-          <div className="relative">
+          <div className="relative   ">
             <div className="cursor-pointer" onClick={toggleDropdown}>
               {userData.profileImage ? (
                 <img
-                  className="w-10 h-10 rounded-full"
+                   className="w-12 h-10 sm:w-12 sm:h-auto rounded-full"
                   src={userData.profileImage}
                   alt="Rounded avatar"
                 />
