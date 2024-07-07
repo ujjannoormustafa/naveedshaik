@@ -234,11 +234,11 @@ const Topbar = ({ onToggleSidebar }) => {
 
 
 
-          <div className="relative">
+          <div className="relative   ">
             <div className="cursor-pointer" onClick={toggleDropdown}>
               {userData.profileImage ? (
                 <img
-                  className="w-12 h-10 sm:w-12 sm:h-auto rounded-full"
+                   className="w-12 h-10 sm:w-12 sm:h-auto rounded-full"
                   src={userData.profileImage}
                   alt="Rounded avatar"
                 />
@@ -272,11 +272,11 @@ const Topbar = ({ onToggleSidebar }) => {
                 </a>
               </li>
               <li>
-                <a
-                  href="#"
+                <Link
+                  to='/admin/settings'
                   className="block px-4 py-2 text-sm text-white hover:bg-black  "                >
                   Settings
-                </a>
+                </Link>
               </li>
               <li>
                 <a

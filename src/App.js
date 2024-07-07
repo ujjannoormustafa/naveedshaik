@@ -35,9 +35,10 @@ import VerifyCode from "./components/general/authentication/VerifyCode";
 import NewPassword from "./components/general/authentication/NewPassword";
 import ActivationPage from "./components/general/authentication/ActivationPage";
 import PreActivation from "./components/general/authentication/PreActivationPage";
-
+import Settings from "./components/general/Settings";
 import { useAuth } from "./context/AuthContext"; // replace with the actual path
 
+import Loader from "./components/general/Loader";
 
 
 const ProtectedRoute = ({ element, role }) => {
@@ -103,10 +104,20 @@ function App() {
             index
             element={<ProtectedRoute element={<HomePage />} role="admin" />}
           />
+           <Route
+            path='loader'
+            element={<ProtectedRoute element={<Loader />} role="admin" />}
+          />
           <Route
             path="change-profile"
             element={
               <ProtectedRoute element={<ChangeProfile />} role="admin" />
+            }
+          />
+          <Route
+            path="settings"
+            element={
+              <ProtectedRoute element={<Settings />} role="admin" />
             }
           />
           <Route

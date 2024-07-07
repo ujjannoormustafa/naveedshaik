@@ -378,29 +378,29 @@ const UserTopbar = ({ onToggleSidebar }) => {
             </div>
             <ul className="py-2" aria-labelledby="user-menu-button">
               <li>
-                <a
-                  href="#"
+                <Link
+                  to="/user"
                   className="block px-4 py-2 text-sm text-white hover:bg-black"
                 >
                   Dashboard
-                </a>
+                </Link>
               </li>
               <li>
-                <a
-                  href="#"
+                <Link
+                  to='/user/change-profile'
                   className="block px-4 py-2 text-sm text-white hover:bg-black"
                 >
-                  Settings
-                </a>
+                  Profile
+                </Link>
               </li>
-              <li>
+              {/* <li>
                 <a
                   href="#"
                   className="block px-4 py-2 text-sm text-white hover:bg-black"
                 >
                   Earnings
                 </a>
-              </li>
+              </li> */}
               <li>
                 <Link
                   onClick={handleLogout}
