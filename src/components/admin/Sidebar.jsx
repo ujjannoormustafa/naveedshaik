@@ -124,7 +124,7 @@ const MySidebar = () => {
           <MenuItem>Settings</MenuItem>
         </SubMenu>
 
-        <SubMenu title="Events" icon={<Icon path={mdiCalendarStar} size={1} />}>
+        <SubMenu title="Items" icon={<Icon path={mdiCalendarStar} size={1} />}>
           <MenuItem>
             <Link
               to="/admin/create-event"

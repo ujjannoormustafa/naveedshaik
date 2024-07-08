@@ -207,14 +207,14 @@ const CreateEvent = () => {
 
   return (
     <div className="bg-white container mx-auto mt-8 p-4">
-      <h2 className="text-3xl font-semibold mb-4">Create Event</h2>
+      <h2 className="text-3xl font-semibold mb-4">Add Items</h2>
       <form>
         <div className="mb-4">
           <label
             htmlFor="eventTitle"
             className="block text-lg font-bold text-black"
           >
-            Event Title
+             Title
           </label>
           <input
             type="text"
@@ -231,7 +231,7 @@ const CreateEvent = () => {
             htmlFor="eventDetails"
             className="block text-lg font-bold text-black"
           >
-            Event Details
+            Item Details
           </label>
           <textarea
             id="eventDetails"
@@ -308,58 +308,58 @@ const CreateEvent = () => {
             </div>
           )}
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="mb-4">
-            <label
-              htmlFor="eventDate"
-              className="block text-lg font-bold text-black"
-            >
-              Date
-            </label>
-            <input
-              type="date"
-              id="eventDate"
-              name="date"
-              onChange={handleInputChange}
-              value={eventInfo.date}
-              className="mt-1 p-2 border border-black rounded-md w-full"
-            />
-          </div>
-          <div className="mb-4">
-            <label
-              htmlFor="eventTime"
-              className="block text-lg font-bold text-black"
-            >
-              Time
-            </label>
-            <input
-              type="time"
-              id="eventTime"
-              name="time"
-              onChange={handleInputChange}
-              onKeyPress={handleKeyPress}
-              value={eventInfo.time}
-              className="mt-1 p-2 border border-black rounded-md w-full"
-            />
-          </div>
-        </div>
-        <div className="mb-4">
-          <label
-            htmlFor="eventVenue"
-            className="block text-lg font-bold text-black"
-          >
-            Venue
-          </label>
-          <input
-            type="text"
-            id="eventVenue"
-            name="venue"
-            onChange={handleInputChange}
-            onKeyPress={handleKeyPress}
-            value={eventInfo.venue}
-            className="mt-1 p-2 border border-black rounded-md w-full"
-          />
-        </div>
+        {/*<div className="grid grid-cols-1 md:grid-cols-2 gap-4">*/}
+        {/*  <div className="mb-4">*/}
+        {/*    <label*/}
+        {/*      htmlFor="eventDate"*/}
+        {/*      className="block text-lg font-bold text-black"*/}
+        {/*    >*/}
+        {/*      Date*/}
+        {/*    </label>*/}
+        {/*    <input*/}
+        {/*      type="date"*/}
+        {/*      id="eventDate"*/}
+        {/*      name="date"*/}
+        {/*      onChange={handleInputChange}*/}
+        {/*      value={eventInfo.date}*/}
+        {/*      className="mt-1 p-2 border border-black rounded-md w-full"*/}
+        {/*    />*/}
+        {/*  </div>*/}
+        {/*  <div className="mb-4">*/}
+        {/*    <label*/}
+        {/*      htmlFor="eventTime"*/}
+        {/*      className="block text-lg font-bold text-black"*/}
+        {/*    >*/}
+        {/*      Time*/}
+        {/*    </label>*/}
+        {/*    <input*/}
+        {/*      type="time"*/}
+        {/*      id="eventTime"*/}
+        {/*      name="time"*/}
+        {/*      onChange={handleInputChange}*/}
+        {/*      onKeyPress={handleKeyPress}*/}
+        {/*      value={eventInfo.time}*/}
+        {/*      className="mt-1 p-2 border border-black rounded-md w-full"*/}
+        {/*    />*/}
+        {/*  </div>*/}
+        {/*</div>*/}
+        {/*<div className="mb-4">*/}
+        {/*  <label*/}
+        {/*    htmlFor="eventVenue"*/}
+        {/*    className="block text-lg font-bold text-black"*/}
+        {/*  >*/}
+        {/*    Venue*/}
+        {/*  </label>*/}
+        {/*  <input*/}
+        {/*    type="text"*/}
+        {/*    id="eventVenue"*/}
+        {/*    name="venue"*/}
+        {/*    onChange={handleInputChange}*/}
+        {/*    onKeyPress={handleKeyPress}*/}
+        {/*    value={eventInfo.venue}*/}
+        {/*    className="mt-1 p-2 border border-black rounded-md w-full"*/}
+        {/*  />*/}
+        {/*</div>*/}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="mb-4">
             <label
@@ -402,7 +402,7 @@ const CreateEvent = () => {
           onClick={handleCreateEvent}
           className="bg-black text-white py-2 px-4 rounded-md transition duration-300"
         >
-          {loading ? "Creating Event..." : "Create Event"}
+          {loading ? "Creating Event..." : "Save Item"}
         </button>
       </form>
       <ToastContainer />

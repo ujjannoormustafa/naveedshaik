@@ -32,7 +32,7 @@ const Home = () => {
         {/* Statistics Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
           <div className="bg-white p-6 rounded-lg shadow-lg">
-            <h2 className="text-2xl font-semibold mb-4 text-black">Total Events</h2>
+            <h2 className="text-2xl font-semibold mb-4 text-black">Total Items</h2>
             <p className="text-gray-600 text-3xl">24</p>
           </div>
           <div className="bg-white p-6 rounded-lg shadow-lg">
@@ -47,7 +47,7 @@ const Home = () => {
 
         {/* Manage Events */}
         <div className="bg-white p-6 rounded-lg shadow-lg mb-12">
-          <h2 className="text-2xl font-semibold mb-4 text-black">Manage Events</h2>
+          <h2 className="text-2xl font-semibold mb-4 text-black">Manage Items</h2>
           <button className="bg-black text-white px-4 py-2 rounded mb-4">Add New Event</button>
           <table className="min-w-full bg-white">
             <thead>
