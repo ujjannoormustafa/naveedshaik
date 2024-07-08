@@ -74,7 +74,7 @@ body,
 .pro-sidebar .pro-sidebar-inner {
   overflow-y: hidden;
   height: 100vh;
-  background-color: black !important;
+  background-color: #F97316 !important;
 }
 /* Custom styles for FullCalendar elements */
 .fc-prev-button,
@@ -84,7 +84,7 @@ body,
 .fc-dayGridMonth-button,
 .fc-timeGridWeek-button,
 .fc-timeGridDay-button {
-  background-color: black !important; /* Change to your preferred color */
+    background-color: #F97316 !important; /* Change to your preferred color */
   color: #fff; /* Change to your preferred color */
   border: none;
   border-radius: 4px;
@@ -96,14 +96,14 @@ body,
   background-color: none !important;
 }
 .fc-more-link {
-  background-color: black !important;
+    background-color: #F97316 !important;
   color: white !important;
 }
 .fc-toolbar-title {
   color: black !important;
 }
 .fc-event-main {
-  background-color: black !important;
+    background-color: #F97316 !important;
 }
 .fc-popover {
   width: 100% !important;

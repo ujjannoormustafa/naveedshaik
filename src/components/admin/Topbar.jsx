@@ -3,6 +3,7 @@ import { mdiMenu, mdiMagnify, mdiAccountCircle } from "@mdi/js";
 import Icon from "@mdi/react";
 import { useAuth } from "../../context/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
+import logo from "../../resources/images/logo.png"
 
 const DropdownMenu = ({ onProfileClick, onLogoutClick, closeDropdown }) => {
   return (
@@ -187,7 +188,7 @@ const Topbar = ({ onToggleSidebar }) => {
   return (
     <>
       {isLoggedIn && (
-        <div className="bg-black p-4 flex flex-row justify-between items-center text-white w-full block relative border-white">
+        <div className="bg-[#F97316] p-4 flex flex-row justify-between items-center text-white w-full block relative border-white">
           <div className="toggle-button" onClick={onToggleSidebar}>
             <Icon id="toggleButton" path={mdiMenu} size={1} />
           </div>
@@ -238,8 +239,8 @@ const Topbar = ({ onToggleSidebar }) => {
             <div className="cursor-pointer" onClick={toggleDropdown}>
               {userData.profileImage ? (
                 <img
-                   className="w-12 h-10 sm:w-12 sm:h-auto rounded-full"
-                  src={userData.profileImage}
+                   className="w-12 h-10 bg-white p-1 sm:w-12 sm:h-auto rounded-full"
+                  src={logo}
                   alt="Rounded avatar"
                 />
               ) : (

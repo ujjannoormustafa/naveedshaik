@@ -82,22 +82,20 @@ const MySidebar = () => {
     >
       <SidebarHeader
         style={{
-          backgroundColor: "black",
+          backgroundColor: "#F97316",
           color: "white",
         }}
       >
-        <div className="flex m-4 items-center justify-center">
+        <div className="flex p-2 items-center bg-white round justify-center">
           <img src={Logo} alt="Logo" className="w-16 h-16  mr-2" />
-          <h1 className="text-white text-lg font-bold font-lobster">
-            H2OEvents
-          </h1>
+
         </div>
         {/* <h1 className="text-white">Logo</h1> */}
       </SidebarHeader>
       <Menu
         iconShape="square"
         style={{
-          backgroundColor: "black",
+          backgroundColor: '#F97316',
           color: "white",
         }}
       >
