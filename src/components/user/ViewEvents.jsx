@@ -60,7 +60,7 @@ const ViewEvents = () => {
 
   return (
     <div className="bg-white container mx-auto mt-8 p-4">
-      <h1 className="text-3xl font-semibold mb-4">Events</h1>
+      <h1 className="text-3xl font-semibold mb-4">All Items</h1>
       <div className="relative mb-8 w-full md:w-2/3 lg:w-1/2 mx-auto">
         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
           <Icon

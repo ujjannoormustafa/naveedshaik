@@ -265,7 +265,7 @@ const UserTopbar = ({ onToggleSidebar }) => {
   return (
     <>
       {isLoggedIn && (
-        <div className="bg-black p-4 flex flex-row justify-between items-center text-white w-full block relative border-white">
+        <div className="bg-orange-500 p-4 flex flex-row justify-between items-center text-white w-full block relative border-white">
           <div className="toggle-button" onClick={onToggleSidebar}>
             <Icon id="toggleButton" path={mdiMenu} size={1} />
           </div>

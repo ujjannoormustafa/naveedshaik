@@ -88,22 +88,20 @@ const UserSidebar = () => {
     >
       <SidebarHeader
         style={{
-          backgroundColor: "black",
+          backgroundColor: "#F97316",
           color: "white",
         }}
       >
-        <div className="flex m-4 items-center justify-center">
+        <div className="flex  bg-white items-center p-2 justify-center">
           <img src={Logo} alt="Logo" className="w-16 h-16  mr-2" />
-          <h1 className="text-white text-lg font-bold font-lobster">
-            H2OEvents
-          </h1>
+
         </div>
         {/* <h1 className="text-white">Logo</h1> */}
       </SidebarHeader>
       <Menu
         iconShape="square"
         style={{
-          backgroundColor: "black",
+          backgroundColor: "#F97316",
           color: "white",
         }}
       >
@@ -145,7 +143,7 @@ const UserSidebar = () => {
             >
                       
 
-              View Events
+              View Items
             </Link>
           </MenuItem>
           <MenuItem
@@ -157,7 +155,7 @@ const UserSidebar = () => {
                 color: "white",
               }}
             >
-              Booked Events
+              Booked Items
             </Link>
           </MenuItem>
           <MenuItem
@@ -169,7 +167,7 @@ const UserSidebar = () => {
                 color: "white",
               }}
             >
-              past Events
+              past Items
             </Link>
           </MenuItem>
           {/* Add more menu items as needed */}
