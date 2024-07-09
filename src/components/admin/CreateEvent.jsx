@@ -23,9 +23,9 @@ const CreateEvent = () => {
     title: "",
     details: "",
     mediaFiles: [],
-    date: "",
-    time: "",
-    venue: "",
+    date: "12/03/2024",
+    time: "12:32 pm",
+    venue: "khp",
     totalSeats: "",
     ticketPrice: "",
   });
@@ -308,7 +308,7 @@ const CreateEvent = () => {
             </div>
           )}
         </div>
-        {/*<div className="grid grid-cols-1 md:grid-cols-2 gap-4">*/}
+        {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-4">*/}
         {/*  <div className="mb-4">*/}
         {/*    <label*/}
         {/*      htmlFor="eventDate"*/}
@@ -359,7 +359,7 @@ const CreateEvent = () => {
         {/*    value={eventInfo.venue}*/}
         {/*    className="mt-1 p-2 border border-black rounded-md w-full"*/}
         {/*  />*/}
-        {/*</div>*/}
+        {/*</div> */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="mb-4">
             <label
