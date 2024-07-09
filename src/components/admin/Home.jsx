@@ -48,7 +48,7 @@ const Home = () => {
         {/* Manage Events */}
         <div className="bg-white p-6 rounded-lg shadow-lg mb-12">
           <h2 className="text-2xl font-semibold mb-4 text-black">Manage Items</h2>
-          <button className="bg-black text-white px-4 py-2 rounded mb-4">Add New Event</button>
+          <button className="bg-black text-white px-4 py-2 rounded mb-4">Add New Items</button>
           <table className="min-w-full bg-white">
             <thead>
               <tr>

@@ -248,7 +248,7 @@ const CreateEvent = () => {
             htmlFor="eventMedia"
             className="block text-lg font-bold text-black"
           >
-            Event Media
+            Add Item Image
           </label>
           <input
             type="file"
@@ -366,7 +366,7 @@ const CreateEvent = () => {
               htmlFor="eventSeats"
               className="block text-lg font-bold text-black"
             >
-              Total Seats
+              Item qty
             </label>
             <input
               type="number"
@@ -383,7 +383,7 @@ const CreateEvent = () => {
               htmlFor="eventPrice"
               className="block text-lg font-bold text-black"
             >
-              Ticket Price
+               Price
             </label>
             <input
               type="number"
