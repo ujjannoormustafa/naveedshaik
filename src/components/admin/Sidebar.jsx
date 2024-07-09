@@ -132,7 +132,7 @@ const MySidebar = () => {
                 color: "white",
               }}
             >
-              Create Event
+              Create Food Item
             </Link>
           </MenuItem>
           <MenuItem>
@@ -142,7 +142,7 @@ const MySidebar = () => {
                 color: "white",
               }}
             >
-              Event List
+              Item List
             </Link>
           </MenuItem>
           {/* Add more menu items as needed */}
